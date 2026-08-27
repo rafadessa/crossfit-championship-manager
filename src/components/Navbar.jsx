@@ -9,24 +9,44 @@ import {
   Timer, 
   Tv, 
   LayoutDashboard,
-  RotateCcw
+  Lock,
+  Unlock,
+  ShieldCheck,
+  RotateCcw,
+  Sparkles,
+  Trash2
 } from 'lucide-react';
 
 export const Navbar = () => {
-  const { activeTab, setActiveTab, resetToSampleData } = useTournament();
+  const { 
+    activeTab, 
+    setActiveTab, 
+    isAdminLoggedIn, 
+    logoutAdmin,
+    clearAllData,
+    loadSampleData
+  } = useTournament();
 
   const navItems = [
-    { id: 'dashboard', label: 'Painel', icon: LayoutDashboard },
-    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, badge: 'LIVE' },
-    { id: 'wods', label: 'Provas (WODs)', icon: Dumbbell },
-    { id: 'athletes', label: 'Atletas', icon: Users },
-    { id: 'judge', label: 'Área do Juiz', icon: ClipboardCheck },
-    { id: 'heats', label: 'Baterias', icon: Layers },
-    { id: 'timer', label: 'Cronômetro Arena', icon: Timer },
+    { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, badge: 'LIVE', public: true },
+    { id: 'wods', label: 'Provas (WODs)', icon: Dumbbell, public: false },
+    { id: 'athletes', label: 'Atletas', icon: Users, public: false },
+    { id: 'judge', label: 'Área do Juiz', icon: ClipboardCheck, public: false },
+    { id: 'heats', label: 'Baterias', icon: Layers, public: false },
+    { id: 'timer', label: 'Cronômetro Arena', icon: Timer, public: true },
   ];
 
+  const handleTabClick = (item) => {
+    if (!item.public && !isAdminLoggedIn) {
+      setActiveTab('login');
+    } else {
+      setActiveTab(item.id);
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-[#0a0c10]/80 border-b border-white/10 px-4 py-3">
+    <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#07090e]/85 border-b border-white/10 px-4 py-3 shadow-xl">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Brand Logo */}
@@ -34,7 +54,7 @@ export const Navbar = () => {
           onClick={() => setActiveTab('dashboard')} 
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ccff00] to-[#88ff00] flex items-center justify-center text-black font-black shadow-lg shadow-[#ccff00]/20 group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ccff00] to-[#88ff00] flex items-center justify-center text-black font-black shadow-lg shadow-[#ccff00]/25 group-hover:scale-105 transition-transform">
             <Dumbbell className="w-6 h-6 stroke-[2.5]" />
           </div>
           <div>
@@ -42,7 +62,7 @@ export const Navbar = () => {
               <span className="font-display text-2xl font-bold tracking-wider text-white">FITSCORE</span>
               <span className="bg-[#ccff00] text-black text-xs font-black px-1.5 py-0.5 rounded">PRO</span>
             </div>
-            <p className="text-[11px] text-slate-400 font-mono uppercase tracking-widest -mt-1">CrossFit Championship</p>
+            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest -mt-1">CrossFit Championship</p>
           </div>
         </div>
 
@@ -51,20 +71,27 @@ export const Navbar = () => {
           {navItems.map(item => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const isLocked = !item.public && !isAdminLoggedIn;
+
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
+                onClick={() => handleTabClick(item)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                   isActive 
-                    ? 'bg-[#ccff00] text-black shadow-md shadow-[#ccff00]/20 font-bold' 
+                    ? 'bg-[#ccff00] text-black shadow-md shadow-[#ccff00]/20 font-black' 
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
+                
+                {isLocked && (
+                  <Lock className="w-3 h-3 text-orange-400 ml-0.5" />
+                )}
+
                 {item.badge && (
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black uppercase ${
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black uppercase ${
                     isActive ? 'bg-black text-[#ccff00]' : 'bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse'
                   }`}>
                     {item.badge}
@@ -75,28 +102,71 @@ export const Navbar = () => {
           })}
         </nav>
 
-        {/* Action Buttons: TV Mode & Reset Data */}
+        {/* Action Buttons: Admin Controls & TV Mode */}
         <div className="flex items-center gap-2">
+          
+          {/* Admin Login / Logout Indicator */}
+          {isAdminLoggedIn ? (
+            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-bold text-emerald-400 hidden sm:inline">ADMIN</span>
+              <button
+                onClick={logoutAdmin}
+                className="text-[11px] font-mono text-slate-400 hover:text-white underline ml-1"
+                title="Sair do modo Admin"
+              >
+                Sair
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setActiveTab('login')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 hover:bg-orange-500/25 transition-all text-xs font-bold"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Login Admin</span>
+            </button>
+          )}
+
+          {/* TV Mode Button */}
           <button
             onClick={() => setActiveTab('tv')}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all"
             title="Modo Telão para Transmissão na Arena"
           >
             <Tv className="w-4 h-4" />
-            <span className="hidden sm:inline">Modo Telão TV</span>
+            <span className="hidden sm:inline">Modo Telão</span>
           </button>
 
-          <button
-            onClick={() => {
-              if (window.confirm('Deseja restaurar os dados de teste iniciais do campeonato?')) {
-                resetToSampleData();
-              }
-            }}
-            className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-            title="Resetar para dados de demonstração"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+          {/* Quick Data Actions Dropdown / Reset */}
+          {isAdminLoggedIn && (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  if (window.confirm('Deseja ZERAR todos os dados (WODs, atletas, notas e baterias) para iniciar um campeonato limpo do zero?')) {
+                    clearAllData();
+                  }
+                }}
+                className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
+                title="Zerar todos os dados do campeonato (Iniciar do Zero)"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  if (window.confirm('Deseja carregar dados de demonstração fictícios para testes rápidos?')) {
+                    loadSampleData();
+                  }
+                }}
+                className="p-2 text-slate-400 hover:text-[#ccff00] hover:bg-white/10 rounded-xl transition-colors"
+                title="Carregar Dados de Demonstração"
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
         </div>
 
       </div>

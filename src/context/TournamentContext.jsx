@@ -10,38 +10,48 @@ import {
 const TournamentContext = createContext();
 
 export const TournamentProvider = ({ children }) => {
-  // Load state from localStorage or initialize with sampleData
+  // Admin Authentication State
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    return localStorage.getItem('fitscore_admin_auth') === 'true';
+  });
+
+  // Categories start with standard CrossFit categories
   const [categories, setCategories] = useState(() => {
     const saved = localStorage.getItem('fitscore_categories');
     return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
   });
 
+  // WODs, Athletes, Scores, Heats start EMPTY by default as requested by the user
   const [wods, setWods] = useState(() => {
     const saved = localStorage.getItem('fitscore_wods');
-    return saved ? JSON.parse(saved) : INITIAL_WODS;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [athletes, setAthletes] = useState(() => {
     const saved = localStorage.getItem('fitscore_athletes');
-    return saved ? JSON.parse(saved) : INITIAL_ATHLETES;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [scores, setScores] = useState(() => {
     const saved = localStorage.getItem('fitscore_scores');
-    return saved ? JSON.parse(saved) : INITIAL_SCORES;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [heats, setHeats] = useState(() => {
     const saved = localStorage.getItem('fitscore_heats');
-    return saved ? JSON.parse(saved) : INITIAL_HEATS;
+    return saved ? JSON.parse(saved) : [];
   });
 
-  // Current view: 'dashboard' | 'leaderboard' | 'wods' | 'athletes' | 'judge' | 'heats' | 'timer' | 'tv'
+  // Active navigation tab
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedCategory, setSelectedCategory] = useState('rx_male');
   const [activeHeatForTimer, setActiveHeatForTimer] = useState(null);
 
-  // Sync to LocalStorage
+  // Sync state to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('fitscore_admin_auth', isAdminLoggedIn ? 'true' : 'false');
+  }, [isAdminLoggedIn]);
+
   useEffect(() => {
     localStorage.setItem('fitscore_categories', JSON.stringify(categories));
   }, [categories]);
@@ -62,7 +72,20 @@ export const TournamentProvider = ({ children }) => {
     localStorage.setItem('fitscore_heats', JSON.stringify(heats));
   }, [heats]);
 
-  // Actions / Handlers
+  // Admin Auth Handlers
+  const loginAdmin = (password) => {
+    if (password === 'admin123' || password === 'admin') {
+      setIsAdminLoggedIn(true);
+      return true;
+    }
+    return false;
+  };
+
+  const logoutAdmin = () => {
+    setIsAdminLoggedIn(false);
+  };
+
+  // CRUD Handlers
   const addAthlete = (newAthlete) => {
     const athlete = {
       ...newAthlete,
@@ -126,17 +149,32 @@ export const TournamentProvider = ({ children }) => {
     setHeats(prev => prev.map(h => h.id === heatId ? { ...h, status } : h));
   };
 
-  const resetToSampleData = () => {
+  // Clear all tournament data (Zerar Dados)
+  const clearAllData = () => {
+    setWods([]);
+    setAthletes([]);
+    setScores([]);
+    setHeats([]);
+    localStorage.removeItem('fitscore_wods');
+    localStorage.removeItem('fitscore_athletes');
+    localStorage.removeItem('fitscore_scores');
+    localStorage.removeItem('fitscore_heats');
+  };
+
+  // Load sample demo data
+  const loadSampleData = () => {
     setCategories(INITIAL_CATEGORIES);
     setWods(INITIAL_WODS);
     setAthletes(INITIAL_ATHLETES);
     setScores(INITIAL_SCORES);
     setHeats(INITIAL_HEATS);
-    localStorage.clear();
   };
 
   return (
     <TournamentContext.Provider value={{
+      isAdminLoggedIn,
+      loginAdmin,
+      logoutAdmin,
       categories,
       wods,
       athletes,
@@ -157,7 +195,8 @@ export const TournamentProvider = ({ children }) => {
       saveScore,
       addHeat,
       updateHeatStatus,
-      resetToSampleData
+      clearAllData,
+      loadSampleData
     }}>
       {children}
     </TournamentContext.Provider>
