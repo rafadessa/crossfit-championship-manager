@@ -10,9 +10,7 @@ import {
   Tv, 
   LayoutDashboard,
   Lock,
-  Unlock,
   ShieldCheck,
-  RotateCcw,
   Sparkles,
   Trash2
 } from 'lucide-react';
@@ -46,28 +44,32 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#07090e]/85 border-b border-white/10 px-4 py-3 shadow-xl">
+    <header className="sticky top-0 z-40 backdrop-blur-2xl bg-[#04060a]/80 border-b border-white/10 px-4 py-3.5 shadow-2xl">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
-        {/* Brand Logo */}
+        {/* Brand Logo with Ambient Glow */}
         <div 
           onClick={() => setActiveTab('dashboard')} 
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-3.5 cursor-pointer group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ccff00] to-[#88ff00] flex items-center justify-center text-black font-black shadow-lg shadow-[#ccff00]/25 group-hover:scale-105 transition-transform">
-            <Dumbbell className="w-6 h-6 stroke-[2.5]" />
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#d4ff00] to-[#00f5d4] rounded-2xl blur opacity-40 group-hover:opacity-100 transition duration-300"></div>
+            <div className="relative w-11 h-11 rounded-2xl bg-[#04060a] border border-white/10 flex items-center justify-center text-[#d4ff00] shadow-xl group-hover:scale-105 transition-transform">
+              <Dumbbell className="w-6 h-6 stroke-[2.5]" />
+            </div>
           </div>
+
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-display text-2xl font-bold tracking-wider text-white">FITSCORE</span>
-              <span className="bg-[#ccff00] text-black text-xs font-black px-1.5 py-0.5 rounded">PRO</span>
+              <span className="font-heading text-2xl font-black tracking-wider text-white">FITSCORE</span>
+              <span className="bg-gradient-to-r from-[#d4ff00] to-[#a6e600] text-black text-[11px] font-black px-2 py-0.5 rounded-md font-heading tracking-widest shadow-md">PRO</span>
             </div>
-            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest -mt-1">CrossFit Championship</p>
+            <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest -mt-0.5">CrossFit Arena Management</p>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 overflow-x-auto max-w-full pb-1 md:pb-0 no-scrollbar">
+        <nav className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 md:pb-0 no-scrollbar">
           {navItems.map(item => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -77,10 +79,10 @@ export const Navbar = () => {
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold tracking-wide transition-all whitespace-nowrap ${
                   isActive 
-                    ? 'bg-[#ccff00] text-black shadow-md shadow-[#ccff00]/20 font-black' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'bg-gradient-to-r from-[#d4ff00] to-[#b3e600] text-black shadow-lg shadow-[#d4ff00]/25' 
+                    : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-slate-400'}`} />
@@ -91,8 +93,8 @@ export const Navbar = () => {
                 )}
 
                 {item.badge && (
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black uppercase ${
-                    isActive ? 'bg-black text-[#ccff00]' : 'bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse'
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black uppercase tracking-widest ${
+                    isActive ? 'bg-black text-[#d4ff00]' : 'bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse'
                   }`}>
                     {item.badge}
                   </span>
@@ -102,14 +104,17 @@ export const Navbar = () => {
           })}
         </nav>
 
-        {/* Action Buttons: Admin Controls & TV Mode */}
-        <div className="flex items-center gap-2">
+        {/* Action Buttons: Admin Status & TV Mode */}
+        <div className="flex items-center gap-2.5">
           
           {/* Admin Login / Logout Indicator */}
           {isAdminLoggedIn ? (
             <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-bold text-emerald-400 hidden sm:inline">ADMIN</span>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-xs font-heading font-extrabold text-emerald-400 hidden sm:inline">ADMIN</span>
               <button
                 onClick={logoutAdmin}
                 className="text-[11px] font-mono text-slate-400 hover:text-white underline ml-1"
@@ -121,7 +126,7 @@ export const Navbar = () => {
           ) : (
             <button
               onClick={() => setActiveTab('login')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 hover:bg-orange-500/25 transition-all text-xs font-bold"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 hover:bg-orange-500/25 transition-all text-xs font-heading font-bold"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>Login Admin</span>
@@ -131,14 +136,14 @@ export const Navbar = () => {
           {/* TV Mode Button */}
           <button
             onClick={() => setActiveTab('tv')}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 text-white font-heading font-black text-xs uppercase tracking-widest shadow-xl hover:brightness-110 transition-all hover:scale-105"
             title="Modo Telão para Transmissão na Arena"
           >
             <Tv className="w-4 h-4" />
             <span className="hidden sm:inline">Modo Telão</span>
           </button>
 
-          {/* Quick Data Actions Dropdown / Reset */}
+          {/* Quick Data Actions */}
           {isAdminLoggedIn && (
             <div className="flex items-center gap-1">
               <button
@@ -159,7 +164,7 @@ export const Navbar = () => {
                     loadSampleData();
                   }
                 }}
-                className="p-2 text-slate-400 hover:text-[#ccff00] hover:bg-white/10 rounded-xl transition-colors"
+                className="p-2 text-slate-400 hover:text-[#d4ff00] hover:bg-white/10 rounded-xl transition-colors"
                 title="Carregar Dados de Demonstração"
               >
                 <Sparkles className="w-4 h-4" />
