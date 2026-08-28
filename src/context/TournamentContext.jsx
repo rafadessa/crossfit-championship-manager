@@ -47,7 +47,47 @@ export const TournamentProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState('rx_male');
   const [activeHeatForTimer, setActiveHeatForTimer] = useState(null);
 
+  // PWA Installation Hook State
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [showIosInstallModal, setShowIosInstallModal] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const triggerPwaInstall = async () => {
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIos) {
+      setShowIosInstallModal(true);
+      return;
+    }
+
+    if (!deferredPrompt) {
+      alert('Para instalar o app no Android/PC, abra este site no Chrome/Edge e selecione "Instalar App" ou "Adicionar à Tela Inicial" no menu do navegador.');
+      return;
+    }
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+    }
+  };
+
   // Sync state to LocalStorage
+
   useEffect(() => {
     localStorage.setItem('fitscore_admin_auth', isAdminLoggedIn ? 'true' : 'false');
   }, [isAdminLoggedIn]);
@@ -196,10 +236,15 @@ export const TournamentProvider = ({ children }) => {
       addHeat,
       updateHeatStatus,
       clearAllData,
-      loadSampleData
+      loadSampleData,
+      isInstallable,
+      triggerPwaInstall,
+      showIosInstallModal,
+      setShowIosInstallModal
     }}>
       {children}
     </TournamentContext.Provider>
+
   );
 };
 

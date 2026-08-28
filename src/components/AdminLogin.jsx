@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { ShieldCheck, Lock, Key, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, Key, AlertCircle, Eye, EyeOff, Sparkles, Flame } from 'lucide-react';
 
 export const AdminLogin = () => {
   const { loginAdmin, setActiveTab } = useTournament();
@@ -25,55 +25,47 @@ export const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center p-4 fade-in relative">
-      
-      {/* Background Glow Orbs */}
-      <div className="bg-orb-orange top-1/4 left-1/3"></div>
-      <div className="bg-orb-lime bottom-1/4 right-1/3"></div>
-
-      <div className="glass-panel p-8 md:p-10 max-w-md w-full space-y-6 border-orange-500/35 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
+    <div className="min-h-[70vh] flex items-center justify-center p-4 animate-fade-in relative">
+      <div className="wod-card p-6 md:p-8 max-w-md w-full space-y-5 border-[#FF5500]/40 shadow-2xl relative overflow-hidden">
         
-        {/* Glow Accent */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl pointer-events-none"></div>
-
         <div className="text-center space-y-3">
-          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-tr from-orange-600 to-amber-500 text-white flex items-center justify-center mx-auto shadow-2xl shadow-orange-500/30 border border-white/20">
-            <ShieldCheck className="w-10 h-10" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#FF5500] to-[#D4FF00] text-black flex items-center justify-center mx-auto shadow-xl">
+            <Flame className="w-9 h-9 fill-black" />
           </div>
           
           <div>
-            <h2 className="font-heading text-3xl font-black text-white tracking-wide">ÁREA DO ORGANIZADOR</h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Autentique-se para gerenciar provas (WODs), cadastrar atletas, lançar notas e organizar baterias.
+            <h2 className="font-heading text-2xl font-black text-white tracking-wide">ÁREA DO ORGANIZADOR</h2>
+            <p className="text-xs text-slate-400 mt-1">
+              Acesso administrativo para gerenciar WODs, atletas, baterias e lançar notas.
             </p>
           </div>
         </div>
 
         {error && (
-          <div className="p-4 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-bold flex items-center gap-3 animate-shake">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+          <div className="p-3.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-bold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
             {error}
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div className="form-group">
-            <label className="form-label flex items-center gap-2 text-slate-300">
-              <Lock className="w-4 h-4 text-orange-400" /> Senha do Administrador
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-heading font-extrabold text-slate-300 uppercase flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-[#FF5500]" /> Senha do Administrador
             </label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
-                placeholder="Digite a senha do admin..."
+                placeholder="Digite a senha..."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-control text-center font-mono py-3.5 pr-12 text-base"
+                className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-base text-white pr-10 focus:outline-none focus:border-[#FF5500]"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -82,23 +74,23 @@ export const AdminLogin = () => {
 
           <button
             type="submit"
-            className="btn btn-orange w-full py-4 text-base"
+            className="btn-wod btn-wod-primary w-full py-3 text-sm font-black"
           >
-            <Key className="w-5 h-5" /> ENTRAR COMO ADMINISTRADOR
+            <Key className="w-4 h-4" /> ENTRAR NO ADMIN
           </button>
         </form>
 
-        <div className="border-t border-white/10 pt-5 text-center space-y-3">
+        <div className="border-t border-white/10 pt-4 text-center space-y-3">
           <p className="text-xs text-slate-400 font-mono">
-            Senha padrão de acesso: <span className="text-[#d4ff00] font-bold">admin123</span>
+            Senha padrão de acesso: <span className="text-[#D4FF00] font-bold">admin123</span>
           </p>
 
           <button
             type="button"
             onClick={handleQuickDemoLogin}
-            className="w-full py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-heading font-extrabold text-slate-200 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+            className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-heading font-bold text-slate-200 flex items-center justify-center gap-2 transition-all"
           >
-            <Sparkles className="w-4 h-4 text-[#d4ff00]" /> Entrar Rapidamente (Acesso Demo)
+            <Sparkles className="w-4 h-4 text-[#D4FF00]" /> Entrar Rapidamente (Demo 1-Clique)
           </button>
         </div>
 

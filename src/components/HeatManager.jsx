@@ -42,68 +42,68 @@ export const HeatManager = () => {
   };
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-5 animate-fade-in">
       
       {/* Header */}
-      <div className="glass-panel p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="wod-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Layers className="w-7 h-7 text-cyan-400" />
-            <h1 className="font-display text-3xl font-black text-white tracking-wide">ORGANIZADOR DE BATERIAS (HEATS)</h1>
+            <Layers className="w-6 h-6 text-[#FF5500]" />
+            <h1 className="font-heading text-2xl font-black text-white tracking-wide">ORGANIZADOR DE BATERIAS (HEATS)</h1>
           </div>
-          <p className="text-slate-400 text-xs mt-1">
-            Monte o chaveamento das baterias por raia e envie diretamente para o Cronômetro Oficial de Arena.
+          <p className="text-slate-400 text-xs mt-0.5">
+            Monte o chaveamento por raia e envie a bateria direto para o Cronômetro Oficial de Arena.
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary self-start sm:self-auto"
+          className="btn-wod btn-wod-primary self-start sm:self-auto text-xs"
         >
-          <Plus className="w-4 h-4" /> Criar Nova Bateria
+          <Plus className="w-4 h-4" /> Nova Bateria
         </button>
       </div>
 
       {/* Heats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {heats.map(heat => {
           const wodObj = wods.find(w => w.id === heat.wodId);
           return (
-            <div key={heat.id} className="glass-panel p-6 space-y-4 hover:border-cyan-500/40 transition-colors">
+            <div key={heat.id} className="wod-card p-5 space-y-4 hover:border-[#FF5500]/40 transition-colors">
               
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div>
-                  <h3 className="font-display text-2xl font-bold text-white leading-none">{heat.name}</h3>
-                  <p className="text-xs text-[#ccff00] font-mono mt-1">{wodObj?.name}</p>
+                  <h3 className="font-heading text-xl font-black text-white leading-none">{heat.name}</h3>
+                  <p className="text-xs text-[#D4FF00] font-mono mt-1 font-bold">{wodObj?.name}</p>
                 </div>
 
                 <div className="text-right space-y-1">
-                  <span className={`badge ${
-                    heat.status === 'completed' ? 'badge-gray' :
-                    heat.status === 'running' ? 'badge-orange animate-pulse' : 'badge-lime'
+                  <span className={`wod-chip ${
+                    heat.status === 'completed' ? 'bg-slate-800 text-slate-400 border border-slate-700' :
+                    heat.status === 'running' ? 'bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/40 animate-pulse' : 'bg-[#D4FF00]/15 text-[#D4FF00] border border-[#D4FF00]/30'
                   }`}>
-                    {heat.status === 'completed' ? 'FINALIZADA' : heat.status === 'running' ? 'EM ANDAMENTO' : 'AGUARDANDO'}
+                    {heat.status === 'completed' ? 'FINALIZADA' : heat.status === 'running' ? 'AO VIVO' : 'AGUARDANDO'}
                   </span>
-                  <p className="text-xs text-slate-400 font-mono flex items-center justify-end gap-1">
-                    <Clock className="w-3 h-3" /> {heat.startTime}
+                  <p className="text-[11px] text-slate-400 font-mono flex items-center justify-end gap-1">
+                    <Clock className="w-3.5 h-3.5" /> {heat.startTime}
                   </p>
                 </div>
               </div>
 
               {/* Lanes Table */}
               <div className="space-y-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Atletas por Raia:</p>
+                <p className="text-[11px] font-heading font-black text-slate-400 uppercase tracking-wider">Atletas por Raia:</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {heat.lanes.map(laneItem => {
                     const athlete = athletes.find(a => a.id === laneItem.athleteId);
                     return (
-                      <div key={laneItem.lane} className="p-2.5 rounded-lg bg-black/40 border border-white/5 flex items-center gap-3">
-                        <div className="w-6 h-6 rounded bg-slate-800 text-cyan-400 font-mono text-xs font-bold flex items-center justify-center">
+                      <div key={laneItem.lane} className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
+                        <div className="w-6 h-6 rounded-lg bg-slate-800 text-[#FF5500] font-mono text-xs font-black flex items-center justify-center shrink-0">
                           R{laneItem.lane}
                         </div>
-                        <div>
-                          <p className="text-xs font-bold text-white line-clamp-1">{athlete ? athlete.name : 'Vazia'}</p>
-                          {athlete && <p className="text-[10px] text-slate-400">#{athlete.bib} • {athlete.box}</p>}
+                        <div className="overflow-hidden">
+                          <p className="text-xs font-bold text-white truncate">{athlete ? athlete.name : 'Vazia'}</p>
+                          {athlete && <p className="text-[10px] text-slate-400 truncate">#{athlete.bib} • {athlete.box}</p>}
                         </div>
                       </div>
                     );
@@ -112,25 +112,23 @@ export const HeatManager = () => {
               </div>
 
               {/* Actions Footer */}
-              <div className="flex items-center justify-between border-t border-white/10 pt-4">
+              <div className="flex items-center justify-between border-t border-white/10 pt-3">
                 <button
                   onClick={() => handleStartTimerForHeat(heat)}
-                  className="btn btn-primary btn-sm"
+                  className="btn-wod btn-wod-citrus text-xs py-2 px-3"
                 >
-                  <PlayCircle className="w-4 h-4" /> Iniciar no Cronômetro
+                  <PlayCircle className="w-4 h-4 text-black" /> Abrir no Cronômetro
                 </button>
 
-                <div className="flex items-center gap-2">
-                  {heat.status !== 'completed' && (
-                    <button
-                      onClick={() => updateHeatStatus(heat.id, 'completed')}
-                      className="btn btn-secondary btn-sm"
-                      title="Marcar como Concluída"
-                    >
-                      <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Concluir
-                    </button>
-                  )}
-                </div>
+                {heat.status !== 'completed' && (
+                  <button
+                    onClick={() => updateHeatStatus(heat.id, 'completed')}
+                    className="btn-wod btn-wod-secondary text-xs py-2 px-3"
+                    title="Marcar como Concluída"
+                  >
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Concluir
+                  </button>
+                )}
               </div>
 
             </div>
@@ -140,33 +138,33 @@ export const HeatManager = () => {
 
       {/* Modal Criar Bateria */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm fade-in">
-          <div className="glass-panel p-6 max-w-lg w-full space-y-4 border-cyan-500/30">
-            <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
-              <Layers className="w-6 h-6 text-cyan-400" /> Criar Nova Bateria
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="wod-card p-6 max-w-lg w-full space-y-4 border-[#FF5500]/40">
+            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
+              <Layers className="w-6 h-6 text-[#FF5500]" /> Criar Nova Bateria
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               
-              <div className="form-group">
-                <label className="form-label">Nome / Identificador da Bateria</label>
+              <div className="space-y-1">
+                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Nome da Bateria</label>
                 <input
                   type="text"
                   required
                   placeholder="Ex: Bateria 1 - RX Masculino"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="input-control"
+                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Provisão (WOD)</label>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">WOD</label>
                   <select
                     value={formData.wodId}
                     onChange={e => setFormData({ ...formData, wodId: e.target.value })}
-                    className="select-control"
+                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
                   >
                     {wods.map(w => (
                       <option key={w.id} value={w.id}>{w.name}</option>
@@ -174,29 +172,29 @@ export const HeatManager = () => {
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Horário de Inicio</label>
+                <div className="space-y-1">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Horário de Início</label>
                   <input
                     type="time"
                     value={formData.startTime}
                     onChange={e => setFormData({ ...formData, startTime: e.target.value })}
-                    className="input-control font-mono"
+                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#FF5500]"
                   />
                 </div>
               </div>
 
               {/* Lane Selections */}
               <div className="space-y-2 border-t border-white/10 pt-3">
-                <label className="form-label">Atribuir Atletas por Raia</label>
+                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Atribuir Raias</label>
                 
                 <div className="grid grid-cols-2 gap-2">
                   {[1, 2, 3, 4].map(num => (
-                    <div key={num} className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold text-cyan-400">R{num}:</span>
+                    <div key={num} className="flex items-center gap-1.5">
+                      <span className="text-xs font-mono font-bold text-[#D4FF00]">R{num}:</span>
                       <select
                         value={formData[`lane${num}`]}
                         onChange={e => setFormData({ ...formData, [`lane${num}`]: e.target.value })}
-                        className="select-control text-xs py-1.5"
+                        className="w-full p-2 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs"
                       >
                         <option value="">(Raia Vazia)</option>
                         {athletes.map(a => (
@@ -212,13 +210,13 @@ export const HeatManager = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="btn btn-secondary"
+                  className="btn-wod btn-wod-secondary text-xs"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn-wod btn-wod-primary text-xs"
                 >
                   Salvar Bateria
                 </button>

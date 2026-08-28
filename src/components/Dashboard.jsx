@@ -14,8 +14,7 @@ import {
   Sparkles,
   Lock,
   Crown,
-  Medal,
-  Award
+  Download
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -29,7 +28,8 @@ export const Dashboard = () => {
     setSelectedCategory,
     selectedCategory,
     isAdminLoggedIn,
-    loadSampleData
+    loadSampleData,
+    triggerPwaInstall
   } = useTournament();
 
   const currentCategoryObj = categories.find(c => c.id === selectedCategory) || categories[0];
@@ -38,83 +38,88 @@ export const Dashboard = () => {
   const hasData = athletes.length > 0 || wods.length > 0;
 
   return (
-    <div className="space-y-8 fade-in relative">
+    <div className="space-y-6 animate-fade-in relative">
       
-      {/* Background Ambient Light Orbs */}
-      <div className="bg-orb-lime top-0 left-1/4"></div>
-      <div className="bg-orb-orange top-1/3 right-10"></div>
-
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl glass-panel p-6 md:p-10 border border-white/15 bg-gradient-to-r from-slate-950 via-slate-900/90 to-[#d4ff00]/10 shadow-2xl">
-        <div className="relative z-10 space-y-4 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#d4ff00]/10 border border-[#d4ff00]/30 text-[#d4ff00] text-xs font-heading font-extrabold uppercase tracking-widest backdrop-blur-md">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d4ff00] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#d4ff00]"></span>
+      {/* WodEngage Hero Header Banner */}
+      <div className="relative overflow-hidden rounded-2xl wod-card p-6 md:p-10 border border-white/15 bg-gradient-to-r from-[#0A0E17] via-[#111827] to-[#FF5500]/15 shadow-2xl">
+        <div className="relative z-10 space-y-4 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF5500]/20 border border-[#FF5500]/40 text-[#FF5500] text-[11px] font-heading font-black uppercase tracking-widest">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF5500] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF5500]"></span>
+              </span>
+              WODENGAGE ARENA LIVE
             </span>
-            Plataforma Oficial de Gestão
+
+            <button 
+              onClick={triggerPwaInstall}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4FF00]/15 border border-[#D4FF00]/40 text-[#D4FF00] text-[11px] font-heading font-black uppercase tracking-widest hover:bg-[#D4FF00]/25 transition-all"
+            >
+              <Download className="w-3.5 h-3.5" /> Instalar App Mobile
+            </button>
           </div>
           
-          <h1 className="font-heading text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
-            CAMPEONATO DE <span className="text-gradient-lime">CROSSFIT</span> & ARENA
+          <h1 className="font-heading text-3xl md:text-5xl font-black tracking-tight leading-none text-white">
+            CAMPEONATO DE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5500] to-[#D4FF00]">CROSSFIT</span> & ARENA
           </h1>
           
-          <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-            Painel em tempo real de resultados, rankings oficiais de pontuação, cronômetro de arena com áudio e transmissão instantânea nos telões.
+          <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl">
+            Gestão oficial de leaderboard em tempo real, baterias de atletas, área do juiz responsiva para celular e cronômetro com aviso sonoro para arena.
           </p>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 pt-3">
+          <div className="flex flex-wrap gap-3 pt-2">
             <button 
               onClick={() => setActiveTab('leaderboard')}
-              className="btn btn-primary"
+              className="btn-wod btn-wod-primary"
             >
-              <Trophy className="w-5 h-5 text-black" /> Ver Leaderboard Oficial
+              <Trophy className="w-4 h-4" /> Ver Leaderboard Ao Vivo
             </button>
             
             {isAdminLoggedIn ? (
               <>
                 <button 
                   onClick={() => setActiveTab('judge')}
-                  className="btn btn-orange"
+                  className="btn-wod btn-wod-citrus"
                 >
-                  <ClipboardCheck className="w-5 h-5" /> Lançar Notas (Juiz)
+                  <ClipboardCheck className="w-4 h-4 text-black" /> Lançar Notas
                 </button>
                 <button 
                   onClick={() => setActiveTab('wods')}
-                  className="btn btn-secondary"
+                  className="btn-wod btn-wod-secondary"
                 >
-                  <PlusCircle className="w-5 h-5" /> Criar WOD
+                  <PlusCircle className="w-4 h-4" /> Cadastrar WOD
                 </button>
               </>
             ) : (
               <button 
                 onClick={() => setActiveTab('login')}
-                className="btn btn-orange"
+                className="btn-wod btn-wod-secondary"
               >
-                <Lock className="w-5 h-5" /> Entrar no Modo Admin
+                <Lock className="w-4 h-4 text-orange-400" /> Acesso Admin
               </button>
             )}
           </div>
         </div>
 
         {/* Decorative Graphic Icon */}
-        <div className="absolute -right-6 -bottom-8 opacity-10 text-white pointer-events-none hidden md:block">
-          <Dumbbell className="w-96 h-96 stroke-[1]" />
+        <div className="absolute -right-8 -bottom-10 opacity-10 text-white pointer-events-none hidden md:block">
+          <Flame className="w-96 h-96 stroke-[1]" />
         </div>
       </div>
 
       {/* Empty State Banner */}
       {!hasData && (
-        <div className="glass-panel p-8 md:p-12 text-center space-y-5 border-orange-500/30 bg-gradient-to-b from-orange-500/10 via-slate-900/40 to-transparent backdrop-blur-xl">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-orange-500/20 to-amber-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 mx-auto shadow-xl shadow-orange-500/10">
-            <Dumbbell className="w-8 h-8" />
+        <div className="wod-card p-6 md:p-10 text-center space-y-4 border-orange-500/30 bg-gradient-to-b from-[#FF5500]/10 via-[#111827] to-transparent">
+          <div className="w-14 h-14 rounded-2xl bg-[#FF5500]/20 border border-[#FF5500]/40 flex items-center justify-center text-[#FF5500] mx-auto shadow-xl">
+            <Dumbbell className="w-7 h-7" />
           </div>
 
-          <div className="max-w-md mx-auto space-y-2">
-            <h3 className="font-heading text-3xl font-black text-white">Nenhum dado cadastrado</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              O campeonato está limpo e pronto para receber seus atletas e provas reais. Cadastre pelo menu Admin ou carregue dados de demonstração para testes.
+          <div className="max-w-md mx-auto space-y-1">
+            <h3 className="font-heading text-2xl font-black text-white">Nenhum dado cadastrado</h3>
+            <p className="text-xs text-slate-400">
+              O campeonato está limpo e pronto. Cadastre seus WODs e atletas ou carregue a demonstração para testar.
             </p>
           </div>
 
@@ -123,75 +128,75 @@ export const Dashboard = () => {
               <>
                 <button 
                   onClick={() => setActiveTab('wods')}
-                  className="btn btn-orange btn-sm"
+                  className="btn-wod btn-wod-primary text-xs py-2 px-4"
                 >
-                  <PlusCircle className="w-4 h-4" /> Cadastrar Primeiro WOD
+                  <PlusCircle className="w-4 h-4" /> Criar WOD
                 </button>
                 <button 
                   onClick={() => setActiveTab('athletes')}
-                  className="btn btn-primary btn-sm"
+                  className="btn-wod btn-wod-citrus text-xs py-2 px-4"
                 >
-                  <Users className="w-4 h-4" /> Cadastrar Primeiro Atleta
+                  <Users className="w-4 h-4 text-black" /> Criar Atleta
                 </button>
               </>
             ) : (
               <button 
                 onClick={() => setActiveTab('login')}
-                className="btn btn-orange btn-sm"
+                className="btn-wod btn-wod-primary text-xs py-2 px-4"
               >
-                <Lock className="w-4 h-4" /> Entrar no Admin para Cadastrar
+                <Lock className="w-4 h-4" /> Entrar como Admin
               </button>
             )}
 
             <button 
               onClick={loadSampleData}
-              className="btn btn-secondary btn-sm"
+              className="btn-wod btn-wod-secondary text-xs py-2 px-4"
             >
-              <Sparkles className="w-4 h-4 text-[#d4ff00]" /> Carregar Dados de Exemplo (Demo)
+              <Sparkles className="w-4 h-4 text-[#D4FF00]" /> Carregar Demo Fictício
             </button>
           </div>
         </div>
       )}
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-        <div className="glass-panel p-6 flex items-center gap-4 hover:border-blue-500/40 transition-all">
-          <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg shadow-blue-500/10">
-            <Users className="w-7 h-7" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-blue-500/40">
+          <div className="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <Users className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[11px] font-heading font-extrabold text-slate-400 uppercase tracking-widest">Competidores</p>
-            <p className="font-heading text-4xl font-black text-white">{athletes.length}</p>
+            <p className="text-[10px] font-heading font-extrabold text-slate-400 uppercase tracking-wider">Atletas</p>
+            <p className="font-heading text-3xl font-black text-white">{athletes.length}</p>
           </div>
         </div>
 
-        <div className="glass-panel p-6 flex items-center gap-4 hover:border-[#d4ff00]/40 transition-all">
-          <div className="w-14 h-14 rounded-2xl bg-[#d4ff00]/10 border border-[#d4ff00]/30 flex items-center justify-center text-[#d4ff00] shadow-lg shadow-[#d4ff00]/10">
-            <Dumbbell className="w-7 h-7" />
+        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-[#D4FF00]/40">
+          <div className="w-12 h-12 rounded-xl bg-[#D4FF00]/15 border border-[#D4FF00]/30 flex items-center justify-center text-[#D4FF00]">
+            <Dumbbell className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[11px] font-heading font-extrabold text-slate-400 uppercase tracking-widest">Provas (WODs)</p>
-            <p className="font-heading text-4xl font-black text-white">{wods.length}</p>
+            <p className="text-[10px] font-heading font-extrabold text-slate-400 uppercase tracking-wider">Provas (WODs)</p>
+            <p className="font-heading text-3xl font-black text-white">{wods.length}</p>
           </div>
         </div>
 
-        <div className="glass-panel p-6 flex items-center gap-4 hover:border-orange-500/40 transition-all">
-          <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 shadow-lg shadow-orange-500/10">
-            <Flame className="w-7 h-7" />
+        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-[#FF5500]/40">
+          <div className="w-12 h-12 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/30 flex items-center justify-center text-[#FF5500]">
+            <Flame className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[11px] font-heading font-extrabold text-slate-400 uppercase tracking-widest">Baterias</p>
-            <p className="font-heading text-4xl font-black text-white">{heats.length}</p>
+            <p className="text-[10px] font-heading font-extrabold text-slate-400 uppercase tracking-wider">Baterias</p>
+            <p className="font-heading text-3xl font-black text-white">{heats.length}</p>
           </div>
         </div>
 
-        <div className="glass-panel p-6 flex items-center gap-4 hover:border-emerald-500/40 transition-all">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10">
-            <ClipboardCheck className="w-7 h-7" />
+        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-emerald-500/40">
+          <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <ClipboardCheck className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[11px] font-heading font-extrabold text-slate-400 uppercase tracking-widest">Notas Registradas</p>
-            <p className="font-heading text-4xl font-black text-white">{scores.length}</p>
+            <p className="text-[10px] font-heading font-extrabold text-slate-400 uppercase tracking-wider">Notas Salvas</p>
+            <p className="font-heading text-3xl font-black text-white">{scores.length}</p>
           </div>
         </div>
       </div>
@@ -200,20 +205,20 @@ export const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Leaderboard Preview (2 cols) */}
-        <div className="lg:col-span-2 glass-panel p-6 md:p-8 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+        <div className="lg:col-span-2 wod-card p-5 md:p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
             <div>
-              <h2 className="font-heading text-3xl font-black text-white flex items-center gap-2.5">
-                <Trophy className="w-6 h-6 text-[#d4ff00]" /> Ranking em Tempo Real
+              <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-[#FF5500]" /> Ranking em Tempo Real
               </h2>
-              <p className="text-xs text-slate-400">Classificação geral calculada pela tabela de pontuação oficial</p>
+              <p className="text-xs text-slate-400">Classificação WodEngage oficial por pontos acumulados</p>
             </div>
 
             {/* Category Selector */}
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="select-control text-xs py-2 px-3 bg-slate-950 border-white/20 w-auto font-heading font-bold text-[#d4ff00]"
+              className="bg-[#0A0E17] border border-white/20 rounded-xl text-xs py-2 px-3 font-heading font-bold text-[#D4FF00] focus:outline-none focus:border-[#FF5500]"
             >
               {categories.map(cat => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -222,13 +227,13 @@ export const Dashboard = () => {
           </div>
 
           {standings.length === 0 ? (
-            <div className="py-16 text-center text-slate-500 space-y-2">
-              <Trophy className="w-12 h-12 stroke-[1] mx-auto text-slate-600" />
-              <p className="text-base font-heading font-bold text-slate-400">Nenhum atleta ranqueado nesta categoria</p>
-              <p className="text-xs text-slate-500">Cadastre atletas e lance notas para formar o ranking oficial.</p>
+            <div className="py-12 text-center text-slate-500 space-y-2">
+              <Trophy className="w-10 h-10 stroke-[1] mx-auto text-slate-600" />
+              <p className="text-sm font-heading font-bold text-slate-400">Nenhum resultado nesta categoria</p>
+              <p className="text-xs text-slate-500">Cadastre atletas e lance notas para gerar a classificação.</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {standings.slice(0, 5).map((item, idx) => {
                 const isFirst = idx === 0;
                 const isSecond = idx === 1;
@@ -237,37 +242,37 @@ export const Dashboard = () => {
                 return (
                   <div 
                     key={item.athlete.id}
-                    className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 ${
+                    className={`flex items-center justify-between p-3.5 rounded-xl transition-all ${
                       isFirst 
-                        ? 'gold-podium-row border border-amber-500/40 shadow-lg shadow-amber-500/10' 
+                        ? 'podium-gold border border-amber-500/40' 
                         : isSecond 
-                        ? 'silver-podium-row border border-slate-400/40'
+                        ? 'podium-silver border border-slate-400/40'
                         : isThird
-                        ? 'bronze-podium-row border border-amber-700/40'
+                        ? 'podium-bronze border border-amber-700/40'
                         : 'bg-white/5 border border-white/5 hover:bg-white/10'
                     }`}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-heading text-xl font-black shadow-md ${
-                        isFirst ? 'bg-gradient-to-tr from-amber-400 to-yellow-300 text-black shadow-amber-400/40' :
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-heading text-base font-black ${
+                        isFirst ? 'bg-gradient-to-tr from-amber-400 to-yellow-300 text-black' :
                         isSecond ? 'bg-gradient-to-tr from-slate-300 to-slate-100 text-black' :
                         isThird ? 'bg-gradient-to-tr from-amber-700 to-amber-600 text-white' : 'bg-slate-800 text-slate-400'
                       }`}>
-                        {isFirst ? <Crown className="w-6 h-6 fill-current text-black" /> : item.overallRank}
+                        {isFirst ? <Crown className="w-5 h-5 fill-current text-black" /> : item.overallRank}
                       </div>
 
                       <div>
-                        <h4 className="font-heading font-bold text-white text-base flex items-center gap-2">
+                        <h4 className="font-heading font-bold text-white text-sm flex items-center gap-2">
                           {item.athlete.name}
-                          <span className="text-xs font-mono font-normal text-slate-400">#{item.athlete.bib}</span>
+                          <span className="text-[11px] font-mono text-slate-400">#{item.athlete.bib}</span>
                         </h4>
-                        <p className="text-xs text-slate-400">{item.athlete.box || 'Independente'}</p>
+                        <p className="text-[11px] text-slate-400">{item.athlete.box || 'Independente'}</p>
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <p className="font-heading text-3xl font-black text-[#d4ff00] leading-none">
-                        {item.totalPoints} <span className="text-xs text-slate-400 font-sans font-medium">pts</span>
+                      <p className="font-heading text-2xl font-black text-[#D4FF00] leading-none">
+                        {item.totalPoints} <span className="text-[10px] text-slate-400 font-sans font-semibold">pts</span>
                       </p>
                     </div>
                   </div>
@@ -278,9 +283,9 @@ export const Dashboard = () => {
 
           <button 
             onClick={() => setActiveTab('leaderboard')}
-            className="w-full py-3 text-xs font-heading font-extrabold tracking-wider uppercase text-slate-300 hover:text-[#d4ff00] flex items-center justify-center gap-1.5 transition-colors border-t border-white/10 pt-4"
+            className="w-full py-3 text-xs font-heading font-extrabold tracking-wider uppercase text-slate-300 hover:text-[#FF5500] flex items-center justify-center gap-1.5 transition-colors border-t border-white/10 pt-3"
           >
-            Abrir Tabela do Leaderboard Completo <ArrowRight className="w-4 h-4 text-[#d4ff00]" />
+            Ver Tabela de Classificação Completa <ArrowRight className="w-4 h-4 text-[#FF5500]" />
           </button>
         </div>
 
@@ -288,22 +293,24 @@ export const Dashboard = () => {
         <div className="space-y-6">
           
           {/* Active WODs Summary */}
-          <div className="glass-panel p-6 space-y-4">
-            <h3 className="font-heading text-2xl font-black text-white flex items-center gap-2.5">
-              <Dumbbell className="w-5 h-5 text-orange-400" /> Provas do Evento
+          <div className="wod-card p-5 space-y-3">
+            <h3 className="font-heading text-xl font-black text-white flex items-center gap-2">
+              <Dumbbell className="w-5 h-5 text-[#FF5500]" /> WODs Registrados
             </h3>
             
             {wods.length === 0 ? (
-              <p className="text-xs text-slate-500 py-6 text-center">Nenhum WOD cadastrado.</p>
+              <p className="text-xs text-slate-500 py-4 text-center">Nenhum WOD cadastrado.</p>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {wods.map(wod => (
-                  <div key={wod.id} className="p-3.5 bg-white/5 border border-white/5 rounded-xl hover:border-white/15 transition-all">
+                  <div key={wod.id} className="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-white/15 transition-all">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-white">{wod.name}</span>
-                      <span className="badge badge-lime text-[9px]">{wod.type.replace('_', ' ')}</span>
+                      <span className="wod-chip bg-[#D4FF00]/15 text-[#D4FF00] border border-[#D4FF00]/30 text-[9px]">
+                        {wod.type.replace('_', ' ')}
+                      </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">{wod.description}</p>
+                    <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{wod.description}</p>
                   </div>
                 ))}
               </div>
@@ -311,34 +318,34 @@ export const Dashboard = () => {
           </div>
 
           {/* Heats Overview */}
-          <div className="glass-panel p-6 space-y-4">
+          <div className="wod-card p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-heading text-2xl font-black text-white flex items-center gap-2.5">
-                <Flame className="w-5 h-5 text-cyan-400" /> Baterias
+              <h3 className="font-heading text-xl font-black text-white flex items-center gap-2">
+                <Flame className="w-5 h-5 text-cyan-400" /> Baterias da Arena
               </h3>
               {isAdminLoggedIn && (
                 <button 
                   onClick={() => setActiveTab('heats')}
-                  className="text-xs font-heading font-extrabold text-[#d4ff00] hover:underline"
+                  className="text-xs font-heading font-extrabold text-[#D4FF00] hover:underline"
                 >
-                  Gerenciar
+                  Baterias
                 </button>
               )}
             </div>
 
             {heats.length === 0 ? (
-              <p className="text-xs text-slate-500 py-6 text-center">Nenhuma bateria agendada.</p>
+              <p className="text-xs text-slate-500 py-4 text-center">Nenhuma bateria agendada.</p>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {heats.map(heat => (
-                  <div key={heat.id} className="p-3.5 bg-white/5 rounded-xl flex items-center justify-between">
+                  <div key={heat.id} className="p-3 bg-white/5 rounded-xl flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-white">{heat.name}</p>
-                      <p className="text-[11px] text-slate-400">Horário: {heat.startTime} • {heat.lanes.length} raias</p>
+                      <p className="text-[10px] text-slate-400">Horário: {heat.startTime} • {heat.lanes.length} raias</p>
                     </div>
-                    <span className={`badge ${
-                      heat.status === 'completed' ? 'badge-gray' :
-                      heat.status === 'running' ? 'badge-orange animate-pulse' : 'badge-lime'
+                    <span className={`wod-chip ${
+                      heat.status === 'completed' ? 'bg-slate-800 text-slate-400 border border-slate-700' :
+                      heat.status === 'running' ? 'bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/40 animate-pulse' : 'bg-[#D4FF00]/15 text-[#D4FF00] border border-[#D4FF00]/30'
                     }`}>
                       {heat.status === 'completed' ? 'Encerrada' : heat.status === 'running' ? 'AO VIVO' : 'Aguardando'}
                     </span>

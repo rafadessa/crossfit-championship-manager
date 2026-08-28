@@ -19,9 +19,9 @@ const MainContent = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-carbon">
+    <div className="min-h-screen flex flex-col bg-[#0A0E17]">
       <Navbar />
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 main-content-padding">
         {activeTab === 'login' && <AdminLogin />}
         {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'leaderboard' && <Leaderboard />}
@@ -36,10 +36,11 @@ const MainContent = () => {
         {activeTab === 'timer' && <ArenaTimer />}
       </main>
       
-      <footer className="border-t border-white/10 py-6 text-center text-xs text-slate-500 font-mono">
-        FitScore Pro &copy; {new Date().getFullYear()} • Sistema Oficial de Gestão de Campeonatos de CrossFit
+      <footer className="border-t border-white/10 py-6 mb-16 md:mb-0 text-center text-xs text-slate-500 font-mono">
+        FitScore Pro &copy; {new Date().getFullYear()} • WodEngage Arena Championship Manager
       </footer>
     </div>
+
   );
 };
 

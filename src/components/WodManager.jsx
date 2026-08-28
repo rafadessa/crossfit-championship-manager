@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { Dumbbell, Plus, Trash2, Edit2, Clock, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Dumbbell, Plus, Trash2, Clock } from 'lucide-react';
 import { formatTime } from '../utils/scoring';
 
 export const WodManager = () => {
@@ -47,79 +47,71 @@ export const WodManager = () => {
   };
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-5 animate-fade-in">
       
       {/* Header */}
-      <div className="glass-panel p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="wod-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Dumbbell className="w-7 h-7 text-orange-400" />
-            <h1 className="font-display text-3xl font-black text-white tracking-wide">CADASTRAR E GERENCIAR PROVAS (WODs)</h1>
+            <Dumbbell className="w-6 h-6 text-[#FF5500]" />
+            <h1 className="font-heading text-2xl font-black text-white tracking-wide">GESTOR DE WODs (PROVAS)</h1>
           </div>
-          <p className="text-slate-400 text-xs mt-1">
-            Defina o formato de pontuação, tempo limite (Cap), repetições por rodada e critérios de desempate.
+          <p className="text-slate-400 text-xs mt-0.5">
+            Cadastre os exercícios, tempo limite (Cap), modelo de pontuação e critérios de desempate.
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary self-start sm:self-auto"
+          className="btn-wod btn-wod-primary text-xs self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" /> Criar Novo WOD
+          <Plus className="w-4 h-4" /> Criar WOD
         </button>
       </div>
 
       {/* WOD Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {wods.map(wod => {
           const categoryObj = categories.find(c => c.id === wod.category);
           return (
-            <div key={wod.id} className="glass-panel p-6 flex flex-col justify-between space-y-4 hover:border-orange-500/40 transition-colors">
+            <div key={wod.id} className="wod-card p-5 flex flex-col justify-between space-y-4 hover:border-[#FF5500]/40 transition-colors">
               <div className="space-y-3">
                 
                 <div className="flex items-center justify-between">
-                  <span className="badge badge-orange font-mono">
+                  <span className="wod-chip bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/40 text-[9px]">
                     {wod.type === 'for_time' ? '⏱️ For Time' :
                      wod.type === 'amrap' ? '🔄 AMRAP' :
-                     wod.type === 'max_weight' ? '🏋️ Carga Máxima' : '⏰ EMOM'}
+                     wod.type === 'max_weight' ? '🏋️ Max Weight' : '⏰ EMOM'}
                   </span>
 
-                  <span className="badge badge-gray text-[10px]">
+                  <span className="wod-chip bg-slate-800 text-slate-400 border border-slate-700 text-[9px]">
                     {categoryObj ? categoryObj.name : 'Todas Categorias'}
                   </span>
                 </div>
 
-                <h3 className="font-display text-2xl font-bold text-white leading-tight">
+                <h3 className="font-heading text-xl font-black text-white leading-tight">
                   {wod.name}
                 </h3>
 
-                <div className="flex items-center gap-2 text-slate-300 text-xs font-mono">
+                <div className="flex items-center gap-1.5 text-slate-300 text-xs font-mono">
                   <Clock className="w-3.5 h-3.5 text-slate-400" /> Time Cap: {formatTime(wod.timeCap)} min
                 </div>
 
                 {/* Description Box */}
-                <div className="p-3 rounded-lg bg-black/40 border border-white/5 font-mono text-xs text-slate-300 whitespace-pre-line leading-relaxed">
+                <div className="p-3 rounded-xl bg-white/5 border border-white/5 font-mono text-xs text-slate-300 whitespace-pre-line leading-relaxed">
                   {wod.description}
                 </div>
-
-                {/* Standards */}
-                {wod.standards && (
-                  <div className="text-xs text-slate-400">
-                    <span className="font-bold text-slate-300 block mb-1">Padrões de Movimento:</span>
-                    <p className="line-clamp-2 text-slate-400 italic">{wod.standards}</p>
-                  </div>
-                )}
               </div>
 
               {/* Card Footer Actions */}
-              <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                <span className="text-[11px] text-slate-500 font-mono">
-                  {wod.tiebreakRule ? `Tiebreak: ${wod.tiebreakRule}` : 'Sem tiebreak estipulado'}
+              <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                <span className="text-[10px] text-slate-400 font-mono">
+                  {wod.tiebreakRule ? `Tiebreak: ${wod.tiebreakRule}` : 'Sem tiebreak registrado'}
                 </span>
 
                 <button
                   onClick={() => {
-                    if (window.confirm(`Excluir o WOD "${wod.name}"? As notas associadas também serão apagadas.`)) {
+                    if (window.confirm(`Excluir o WOD "${wod.name}"?`)) {
                       deleteWod(wod.id);
                     }
                   }}
@@ -136,42 +128,42 @@ export const WodManager = () => {
 
       {/* Create WOD Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm fade-in">
-          <div className="glass-panel p-6 max-w-xl w-full space-y-4 border-orange-500/30">
-            <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
-              <Dumbbell className="w-6 h-6 text-orange-400" /> Criar Novo WOD
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="wod-card p-6 max-w-xl w-full space-y-4 border-[#FF5500]/40">
+            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
+              <Dumbbell className="w-6 h-6 text-[#FF5500]" /> Criar Novo WOD
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="form-group">
-                <label className="form-label">Nome da Prova</label>
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Nome do WOD</label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: WOD 1 - AMRAP 12 MIN"
+                  placeholder="Ex: WOD 1 - FRAN AMRAP"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="input-control"
+                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Tipo de Prova</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Tipo</label>
                   <select
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                    className="select-control"
+                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
                   >
                     <option value="for_time">For Time (Menor tempo)</option>
-                    <option value="amrap">AMRAP (Maior repetições)</option>
-                    <option value="max_weight">Max Weight (Carga 1RM)</option>
+                    <option value="amrap">AMRAP (Mais reps)</option>
+                    <option value="max_weight">Max Weight (Carga RM)</option>
                     <option value="emom">EMOM</option>
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Time Cap (Minutos)</label>
+                <div className="space-y-1">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Time Cap (Minutos)</label>
                   <input
                     type="number"
                     min="1"
@@ -179,72 +171,46 @@ export const WodManager = () => {
                     required
                     value={formData.timeCapMins}
                     onChange={e => setFormData({ ...formData, timeCapMins: e.target.value })}
-                    className="input-control font-mono"
+                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#FF5500]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Categoria Alvo</label>
-                  <select
-                    value={formData.category}
-                    onChange={e => setFormData({ ...formData, category: e.target.value })}
-                    className="select-control"
-                  >
-                    {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {formData.type === 'amrap' && (
-                  <div className="form-group">
-                    <label className="form-label">Reps por Rodada (Rounds)</label>
-                    <input
-                      type="number"
-                      placeholder="Ex: 50"
-                      value={formData.repsPerRound}
-                      onChange={e => setFormData({ ...formData, repsPerRound: e.target.value })}
-                      className="input-control font-mono"
-                    />
-                  </div>
-                )}
+              <div className="space-y-1">
+                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Categoria</label>
+                <select
+                  value={formData.category}
+                  onChange={e => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                >
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Descrição dos Movimentos & Cargas</label>
+              <div className="space-y-1">
+                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Descrição & Cargas</label>
                 <textarea
                   rows="3"
-                  placeholder="Ex: 15 Thrusters (60kg), 15 Pull-ups, 20 Cal Row..."
+                  placeholder="Ex: 21-15-9 Thrusters (43kg) e Pull-ups..."
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className="textarea-control"
+                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-mono focus:border-[#FF5500]"
                 ></textarea>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Regra de Desempate (Tiebreak)</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Tempo ao finalizar a 1ª rodada de Thrusters"
-                  value={formData.tiebreakRule}
-                  onChange={e => setFormData({ ...formData, tiebreakRule: e.target.value })}
-                  className="input-control"
-                />
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="btn btn-secondary"
+                  className="btn-wod btn-wod-secondary text-xs"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-orange"
+                  className="btn-wod btn-wod-primary text-xs"
                 >
                   Salvar WOD
                 </button>
