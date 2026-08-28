@@ -53,7 +53,7 @@ export const WodManager = () => {
       <div className="wod-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Dumbbell className="w-6 h-6 text-[#FF5500]" />
+            <Dumbbell className="w-6 h-6 text-[#D60036]" />
             <h1 className="font-heading text-2xl font-black text-white tracking-wide">GESTOR DE WODs (PROVAS)</h1>
           </div>
           <p className="text-slate-400 text-xs mt-0.5">
@@ -74,11 +74,11 @@ export const WodManager = () => {
         {wods.map(wod => {
           const categoryObj = categories.find(c => c.id === wod.category);
           return (
-            <div key={wod.id} className="wod-card p-5 flex flex-col justify-between space-y-4 hover:border-[#FF5500]/40 transition-colors">
+            <div key={wod.id} className="wod-card p-5 flex flex-col justify-between space-y-4 hover:border-[#D60036]/40 transition-colors">
               <div className="space-y-3">
                 
                 <div className="flex items-center justify-between">
-                  <span className="wod-chip bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/40 text-[9px]">
+                  <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/40 text-[9px]">
                     {wod.type === 'for_time' ? '⏱️ For Time' :
                      wod.type === 'amrap' ? '🔄 AMRAP' :
                      wod.type === 'max_weight' ? '🏋️ Max Weight' : '⏰ EMOM'}
@@ -129,9 +129,9 @@ export const WodManager = () => {
       {/* Create WOD Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="wod-card p-6 max-w-xl w-full space-y-4 border-[#FF5500]/40">
+          <div className="wod-card p-6 max-w-xl w-full space-y-4 border-[#D60036]/40">
             <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
-              <Dumbbell className="w-6 h-6 text-[#FF5500]" /> Criar Novo WOD
+              <Dumbbell className="w-6 h-6 text-[#D60036]" /> Criar Novo WOD
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -143,7 +143,7 @@ export const WodManager = () => {
                   placeholder="Ex: WOD 1 - FRAN AMRAP"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
                 />
               </div>
 
@@ -153,7 +153,7 @@ export const WodManager = () => {
                   <select
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                    className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
                   >
                     <option value="for_time">For Time (Menor tempo)</option>
                     <option value="amrap">AMRAP (Mais reps)</option>
@@ -171,7 +171,7 @@ export const WodManager = () => {
                     required
                     value={formData.timeCapMins}
                     onChange={e => setFormData({ ...formData, timeCapMins: e.target.value })}
-                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#FF5500]"
+                    className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#D60036]"
                   />
                 </div>
               </div>
@@ -181,7 +181,7 @@ export const WodManager = () => {
                 <select
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
                 >
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -196,7 +196,7 @@ export const WodManager = () => {
                   placeholder="Ex: 21-15-9 Thrusters (43kg) e Pull-ups..."
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-mono focus:border-[#FF5500]"
+                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-mono focus:border-[#D60036]"
                 ></textarea>
               </div>
 

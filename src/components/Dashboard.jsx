@@ -40,66 +40,78 @@ export const Dashboard = () => {
   return (
     <div className="space-y-6 animate-fade-in relative">
       
-      {/* WodEngage Hero Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl wod-card p-6 md:p-10 border border-white/15 bg-gradient-to-r from-[#0A0E17] via-[#111827] to-[#FF5500]/15 shadow-2xl">
-        <div className="relative z-10 space-y-4 max-w-3xl">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF5500]/20 border border-[#FF5500]/40 text-[#FF5500] text-[11px] font-heading font-black uppercase tracking-widest">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF5500] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF5500]"></span>
+      {/* CrossGames GTI Hero Header Banner */}
+      <div className="relative overflow-hidden rounded-2xl wod-card p-6 md:p-10 border border-white/15 bg-gradient-to-r from-[#0B0D12] via-[#121620] to-[#D60036]/20 shadow-2xl">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-4 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D60036]/20 border border-[#D60036]/40 text-[#D60036] text-[11px] font-heading font-black uppercase tracking-widest">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D60036] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D60036]"></span>
+                </span>
+                CROSSGAMES GTI LIVE
               </span>
-              WODENGAGE ARENA LIVE
-            </span>
 
-            <button 
-              onClick={triggerPwaInstall}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4FF00]/15 border border-[#D4FF00]/40 text-[#D4FF00] text-[11px] font-heading font-black uppercase tracking-widest hover:bg-[#D4FF00]/25 transition-all"
-            >
-              <Download className="w-3.5 h-3.5" /> Instalar App Mobile
-            </button>
-          </div>
-          
-          <h1 className="font-heading text-3xl md:text-5xl font-black tracking-tight leading-none text-white">
-            CAMPEONATO DE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5500] to-[#D4FF00]">CROSSFIT</span> & ARENA
-          </h1>
-          
-          <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl">
-            Gestão oficial de leaderboard em tempo real, baterias de atletas, área do juiz responsiva para celular e cronômetro com aviso sonoro para arena.
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 pt-2">
-            <button 
-              onClick={() => setActiveTab('leaderboard')}
-              className="btn-wod btn-wod-primary"
-            >
-              <Trophy className="w-4 h-4" /> Ver Leaderboard Ao Vivo
-            </button>
+              <button 
+                onClick={triggerPwaInstall}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-slate-100 text-[11px] font-heading font-black uppercase tracking-widest hover:bg-white/20 transition-all"
+              >
+                <Download className="w-3.5 h-3.5" /> Instalar App Mobile
+              </button>
+            </div>
             
-            {isAdminLoggedIn ? (
-              <>
+            <h1 className="font-heading text-3xl md:text-5xl font-black tracking-tight leading-none text-white">
+              CAMPEONATO <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D60036] to-slate-200">CROSSGAMES GTI</span>
+            </h1>
+            
+            <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl">
+              Gestão oficial de leaderboard em tempo real, baterias de atletas, área do juiz responsiva para celular e cronômetro com aviso sonoro para arena.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3 pt-2">
+              <button 
+                onClick={() => setActiveTab('leaderboard')}
+                className="btn-wod btn-wod-primary"
+              >
+                <Trophy className="w-4 h-4" /> Ver Leaderboard Ao Vivo
+              </button>
+              
+              {isAdminLoggedIn ? (
+                <>
+                  <button 
+                    onClick={() => setActiveTab('judge')}
+                    className="btn-wod btn-wod-silver"
+                  >
+                    <ClipboardCheck className="w-4 h-4 text-black" /> Lançar Notas
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('wods')}
+                    className="btn-wod btn-wod-secondary"
+                  >
+                    <PlusCircle className="w-4 h-4" /> Cadastrar WOD
+                  </button>
+                </>
+              ) : (
                 <button 
-                  onClick={() => setActiveTab('judge')}
-                  className="btn-wod btn-wod-citrus"
-                >
-                  <ClipboardCheck className="w-4 h-4 text-black" /> Lançar Notas
-                </button>
-                <button 
-                  onClick={() => setActiveTab('wods')}
+                  onClick={() => setActiveTab('login')}
                   className="btn-wod btn-wod-secondary"
                 >
-                  <PlusCircle className="w-4 h-4" /> Cadastrar WOD
+                  <Lock className="w-4 h-4 text-red-400" /> Acesso Admin
                 </button>
-              </>
-            ) : (
-              <button 
-                onClick={() => setActiveTab('login')}
-                className="btn-wod btn-wod-secondary"
-              >
-                <Lock className="w-4 h-4 text-orange-400" /> Acesso Admin
-              </button>
-            )}
+              )}
+            </div>
+          </div>
+
+          {/* Logo Emblem Display */}
+          <div className="shrink-0 w-36 h-36 md:w-48 md:h-48 relative flex items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl group hover:scale-105 transition-transform">
+            <div className="absolute -inset-2 bg-gradient-to-r from-[#D60036]/40 to-white/20 rounded-3xl blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <img 
+              src="/logo.png" 
+              alt="CrossGames GTI Logo" 
+              className="relative w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(214,0,54,0.4)]" 
+            />
           </div>
         </div>
 
@@ -111,8 +123,8 @@ export const Dashboard = () => {
 
       {/* Empty State Banner */}
       {!hasData && (
-        <div className="wod-card p-6 md:p-10 text-center space-y-4 border-orange-500/30 bg-gradient-to-b from-[#FF5500]/10 via-[#111827] to-transparent">
-          <div className="w-14 h-14 rounded-2xl bg-[#FF5500]/20 border border-[#FF5500]/40 flex items-center justify-center text-[#FF5500] mx-auto shadow-xl">
+        <div className="wod-card p-6 md:p-10 text-center space-y-4 border-[#D60036]/30 bg-gradient-to-b from-[#D60036]/10 via-[#121620] to-transparent">
+          <div className="w-14 h-14 rounded-2xl bg-[#D60036]/20 border border-[#D60036]/40 flex items-center justify-center text-[#D60036] mx-auto shadow-xl">
             <Dumbbell className="w-7 h-7" />
           </div>
 
@@ -134,7 +146,7 @@ export const Dashboard = () => {
                 </button>
                 <button 
                   onClick={() => setActiveTab('athletes')}
-                  className="btn-wod btn-wod-citrus text-xs py-2 px-4"
+                  className="btn-wod btn-wod-silver text-xs py-2 px-4"
                 >
                   <Users className="w-4 h-4 text-black" /> Criar Atleta
                 </button>
@@ -152,7 +164,7 @@ export const Dashboard = () => {
               onClick={loadSampleData}
               className="btn-wod btn-wod-secondary text-xs py-2 px-4"
             >
-              <Sparkles className="w-4 h-4 text-[#D4FF00]" /> Carregar Demo Fictício
+              <Sparkles className="w-4 h-4 text-red-400" /> Carregar Demo Fictício
             </button>
           </div>
         </div>
@@ -170,8 +182,8 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-[#D4FF00]/40">
-          <div className="w-12 h-12 rounded-xl bg-[#D4FF00]/15 border border-[#D4FF00]/30 flex items-center justify-center text-[#D4FF00]">
+        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-slate-300/40">
+          <div className="w-12 h-12 rounded-xl bg-slate-200/15 border border-slate-300/30 flex items-center justify-center text-slate-200">
             <Dumbbell className="w-6 h-6" />
           </div>
           <div>
@@ -180,8 +192,8 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-[#FF5500]/40">
-          <div className="w-12 h-12 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/30 flex items-center justify-center text-[#FF5500]">
+        <div className="wod-card p-5 flex items-center gap-3.5 hover:border-[#D60036]/40">
+          <div className="w-12 h-12 rounded-xl bg-[#D60036]/15 border border-[#D60036]/30 flex items-center justify-center text-[#D60036]">
             <Flame className="w-6 h-6" />
           </div>
           <div>
@@ -209,16 +221,16 @@ export const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
             <div>
               <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-[#FF5500]" /> Ranking em Tempo Real
+                <Trophy className="w-5 h-5 text-[#D60036]" /> Ranking em Tempo Real
               </h2>
-              <p className="text-xs text-slate-400">Classificação WodEngage oficial por pontos acumulados</p>
+              <p className="text-xs text-slate-400">Classificação CrossGames GTI oficial por pontos acumulados</p>
             </div>
 
             {/* Category Selector */}
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-[#0A0E17] border border-white/20 rounded-xl text-xs py-2 px-3 font-heading font-bold text-[#D4FF00] focus:outline-none focus:border-[#FF5500]"
+              className="bg-[#0B0D12] border border-white/20 rounded-xl text-xs py-2 px-3 font-heading font-bold text-slate-100 focus:outline-none focus:border-[#D60036]"
             >
               {categories.map(cat => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -271,7 +283,7 @@ export const Dashboard = () => {
                     </div>
 
                     <div className="text-right">
-                      <p className="font-heading text-2xl font-black text-[#D4FF00] leading-none">
+                      <p className="font-heading text-2xl font-black text-[#D60036] leading-none">
                         {item.totalPoints} <span className="text-[10px] text-slate-400 font-sans font-semibold">pts</span>
                       </p>
                     </div>
@@ -283,9 +295,9 @@ export const Dashboard = () => {
 
           <button 
             onClick={() => setActiveTab('leaderboard')}
-            className="w-full py-3 text-xs font-heading font-extrabold tracking-wider uppercase text-slate-300 hover:text-[#FF5500] flex items-center justify-center gap-1.5 transition-colors border-t border-white/10 pt-3"
+            className="w-full py-3 text-xs font-heading font-extrabold tracking-wider uppercase text-slate-300 hover:text-[#D60036] flex items-center justify-center gap-1.5 transition-colors border-t border-white/10 pt-3"
           >
-            Ver Tabela de Classificação Completa <ArrowRight className="w-4 h-4 text-[#FF5500]" />
+            Ver Tabela de Classificação Completa <ArrowRight className="w-4 h-4 text-[#D60036]" />
           </button>
         </div>
 
@@ -295,7 +307,7 @@ export const Dashboard = () => {
           {/* Active WODs Summary */}
           <div className="wod-card p-5 space-y-3">
             <h3 className="font-heading text-xl font-black text-white flex items-center gap-2">
-              <Dumbbell className="w-5 h-5 text-[#FF5500]" /> WODs Registrados
+              <Dumbbell className="w-5 h-5 text-[#D60036]" /> WODs Registrados
             </h3>
             
             {wods.length === 0 ? (
@@ -306,7 +318,7 @@ export const Dashboard = () => {
                   <div key={wod.id} className="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-white/15 transition-all">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-white">{wod.name}</span>
-                      <span className="wod-chip bg-[#D4FF00]/15 text-[#D4FF00] border border-[#D4FF00]/30 text-[9px]">
+                      <span className="wod-chip bg-white/10 text-slate-200 border border-white/20 text-[9px]">
                         {wod.type.replace('_', ' ')}
                       </span>
                     </div>
@@ -321,12 +333,12 @@ export const Dashboard = () => {
           <div className="wod-card p-5 space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-heading text-xl font-black text-white flex items-center gap-2">
-                <Flame className="w-5 h-5 text-cyan-400" /> Baterias da Arena
+                <Flame className="w-5 h-5 text-red-500" /> Baterias da Arena
               </h3>
               {isAdminLoggedIn && (
                 <button 
                   onClick={() => setActiveTab('heats')}
-                  className="text-xs font-heading font-extrabold text-[#D4FF00] hover:underline"
+                  className="text-xs font-heading font-extrabold text-[#D60036] hover:underline"
                 >
                   Baterias
                 </button>
@@ -345,7 +357,7 @@ export const Dashboard = () => {
                     </div>
                     <span className={`wod-chip ${
                       heat.status === 'completed' ? 'bg-slate-800 text-slate-400 border border-slate-700' :
-                      heat.status === 'running' ? 'bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/40 animate-pulse' : 'bg-[#D4FF00]/15 text-[#D4FF00] border border-[#D4FF00]/30'
+                      heat.status === 'running' ? 'bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/40 animate-pulse' : 'bg-white/10 text-slate-200 border border-white/20'
                     }`}>
                       {heat.status === 'completed' ? 'Encerrada' : heat.status === 'running' ? 'AO VIVO' : 'Aguardando'}
                     </span>

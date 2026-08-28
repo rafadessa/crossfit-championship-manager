@@ -26,17 +26,17 @@ export const AdminLogin = () => {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-4 animate-fade-in relative">
-      <div className="wod-card p-6 md:p-8 max-w-md w-full space-y-5 border-[#FF5500]/40 shadow-2xl relative overflow-hidden">
+      <div className="wod-card p-6 md:p-8 max-w-md w-full space-y-5 border-[#D60036]/40 shadow-2xl relative overflow-hidden">
         
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#FF5500] to-[#D4FF00] text-black flex items-center justify-center mx-auto shadow-xl">
-            <Flame className="w-9 h-9 fill-black" />
+          <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/15 p-2 flex items-center justify-center mx-auto shadow-xl">
+            <img src="/logo.png" alt="CrossGames GTI Logo" className="w-full h-full object-contain" />
           </div>
           
           <div>
             <h2 className="font-heading text-2xl font-black text-white tracking-wide">ÁREA DO ORGANIZADOR</h2>
             <p className="text-xs text-slate-400 mt-1">
-              Acesso administrativo para gerenciar WODs, atletas, baterias e lançar notas.
+              Acesso administrativo CrossGames GTI para gerenciar WODs, atletas, baterias e lançar notas.
             </p>
           </div>
         </div>
@@ -51,7 +51,7 @@ export const AdminLogin = () => {
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-heading font-extrabold text-slate-300 uppercase flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-[#FF5500]" /> Senha do Administrador
+              <Lock className="w-3.5 h-3.5 text-[#D60036]" /> Senha do Administrador
             </label>
             <div className="relative">
               <input
@@ -60,7 +60,7 @@ export const AdminLogin = () => {
                 placeholder="Digite a senha..."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-base text-white pr-10 focus:outline-none focus:border-[#FF5500]"
+                className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-base text-white pr-10 focus:outline-none focus:border-[#D60036]"
               />
               <button
                 type="button"
@@ -82,7 +82,7 @@ export const AdminLogin = () => {
 
         <div className="border-t border-white/10 pt-4 text-center space-y-3">
           <p className="text-xs text-slate-400 font-mono">
-            Senha padrão de acesso: <span className="text-[#D4FF00] font-bold">admin123</span>
+            Senha padrão de acesso: <span className="text-[#D60036] font-bold">admin123</span>
           </p>
 
           <button
@@ -90,7 +90,7 @@ export const AdminLogin = () => {
             onClick={handleQuickDemoLogin}
             className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-heading font-bold text-slate-200 flex items-center justify-center gap-2 transition-all"
           >
-            <Sparkles className="w-4 h-4 text-[#D4FF00]" /> Entrar Rapidamente (Demo 1-Clique)
+            <Sparkles className="w-4 h-4 text-red-400" /> Entrar Rapidamente (Demo 1-Clique)
           </button>
         </div>
 

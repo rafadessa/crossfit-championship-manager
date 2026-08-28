@@ -1,18 +1,18 @@
 {
-  "name": "FitScore Pro | WodEngage Arena",
-  "short_name": "FitScore",
-  "description": "Sistema de Gestão de Campeonatos de CrossFit, Líderes e Cronômetro em Tempo Real.",
+  "name": "CrossGames GTI | Arena Championship",
+  "short_name": "CrossGames",
+  "description": "Sistema Oficial de Gestão de Campeonatos de CrossFit, Leaderboard e Arena Timer.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0A0E17",
-  "theme_color": "#0A0E17",
+  "background_color": "#0B0D12",
+  "theme_color": "#0B0D12",
   "orientation": "portrait-primary",
   "categories": ["sports", "fitness", "utilities"],
   "icons": [
     {
-      "src": "/pwa-icon.svg",
+      "src": "/logo.png",
       "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

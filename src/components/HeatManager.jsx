@@ -48,7 +48,7 @@ export const HeatManager = () => {
       <div className="wod-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Layers className="w-6 h-6 text-[#FF5500]" />
+            <Layers className="w-6 h-6 text-[#D60036]" />
             <h1 className="font-heading text-2xl font-black text-white tracking-wide">ORGANIZADOR DE BATERIAS (HEATS)</h1>
           </div>
           <p className="text-slate-400 text-xs mt-0.5">
@@ -69,18 +69,18 @@ export const HeatManager = () => {
         {heats.map(heat => {
           const wodObj = wods.find(w => w.id === heat.wodId);
           return (
-            <div key={heat.id} className="wod-card p-5 space-y-4 hover:border-[#FF5500]/40 transition-colors">
+            <div key={heat.id} className="wod-card p-5 space-y-4 hover:border-[#D60036]/40 transition-colors">
               
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div>
                   <h3 className="font-heading text-xl font-black text-white leading-none">{heat.name}</h3>
-                  <p className="text-xs text-[#D4FF00] font-mono mt-1 font-bold">{wodObj?.name}</p>
+                  <p className="text-xs text-red-400 font-mono mt-1 font-bold">{wodObj?.name}</p>
                 </div>
 
                 <div className="text-right space-y-1">
                   <span className={`wod-chip ${
                     heat.status === 'completed' ? 'bg-slate-800 text-slate-400 border border-slate-700' :
-                    heat.status === 'running' ? 'bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/40 animate-pulse' : 'bg-[#D4FF00]/15 text-[#D4FF00] border border-[#D4FF00]/30'
+                    heat.status === 'running' ? 'bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/40 animate-pulse' : 'bg-white/10 text-slate-200 border border-white/20'
                   }`}>
                     {heat.status === 'completed' ? 'FINALIZADA' : heat.status === 'running' ? 'AO VIVO' : 'AGUARDANDO'}
                   </span>
@@ -98,7 +98,7 @@ export const HeatManager = () => {
                     const athlete = athletes.find(a => a.id === laneItem.athleteId);
                     return (
                       <div key={laneItem.lane} className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                        <div className="w-6 h-6 rounded-lg bg-slate-800 text-[#FF5500] font-mono text-xs font-black flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-lg bg-slate-800 text-[#D60036] font-mono text-xs font-black flex items-center justify-center shrink-0">
                           R{laneItem.lane}
                         </div>
                         <div className="overflow-hidden">
@@ -115,7 +115,7 @@ export const HeatManager = () => {
               <div className="flex items-center justify-between border-t border-white/10 pt-3">
                 <button
                   onClick={() => handleStartTimerForHeat(heat)}
-                  className="btn-wod btn-wod-citrus text-xs py-2 px-3"
+                  className="btn-wod btn-wod-silver text-xs py-2 px-3"
                 >
                   <PlayCircle className="w-4 h-4 text-black" /> Abrir no Cronômetro
                 </button>
@@ -139,9 +139,9 @@ export const HeatManager = () => {
       {/* Modal Criar Bateria */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="wod-card p-6 max-w-lg w-full space-y-4 border-[#FF5500]/40">
+          <div className="wod-card p-6 max-w-lg w-full space-y-4 border-[#D60036]/40">
             <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
-              <Layers className="w-6 h-6 text-[#FF5500]" /> Criar Nova Bateria
+              <Layers className="w-6 h-6 text-[#D60036]" /> Criar Nova Bateria
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -154,7 +154,7 @@ export const HeatManager = () => {
                   placeholder="Ex: Bateria 1 - RX Masculino"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
                 />
               </div>
 
@@ -164,7 +164,7 @@ export const HeatManager = () => {
                   <select
                     value={formData.wodId}
                     onChange={e => setFormData({ ...formData, wodId: e.target.value })}
-                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                    className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
                   >
                     {wods.map(w => (
                       <option key={w.id} value={w.id}>{w.name}</option>
@@ -178,7 +178,7 @@ export const HeatManager = () => {
                     type="time"
                     value={formData.startTime}
                     onChange={e => setFormData({ ...formData, startTime: e.target.value })}
-                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#FF5500]"
+                    className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#D60036]"
                   />
                 </div>
               </div>

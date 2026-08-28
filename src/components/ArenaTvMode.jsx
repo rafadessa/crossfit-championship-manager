@@ -21,21 +21,21 @@ export const ArenaTvMode = () => {
   const standings = calculateOverallStandings(activeCategory?.id, athletes, wods, scores);
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0A0E17] text-white p-6 md:p-10 flex flex-col justify-between overflow-y-auto no-scrollbar animate-fade-in">
+    <div className="fixed inset-0 z-50 bg-[#0B0D12] text-white p-6 md:p-10 flex flex-col justify-between overflow-y-auto no-scrollbar animate-fade-in">
       
       {/* Header Bar */}
-      <div className="flex items-center justify-between border-b-2 border-[#FF5500]/40 pb-5">
+      <div className="flex items-center justify-between border-b-2 border-[#D60036]/50 pb-5">
         
         {/* Event Logo */}
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#FF5500] to-[#D4FF00] text-black flex items-center justify-center font-black text-2xl shadow-xl">
-            <Flame className="w-8 h-8 fill-black" />
+          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/15 p-1.5 flex items-center justify-center shadow-xl">
+            <img src="/logo.png" alt="CrossGames GTI Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-heading text-3xl font-black tracking-wider text-white">FITSCORE PRO</span>
-              <span className="bg-[#FF5500] text-white text-xs font-black px-2 py-0.5 rounded tracking-widest animate-pulse font-heading">
-                WODENGAGE TV
+              <span className="font-heading text-3xl font-black tracking-wider text-white">CROSSGAMES GTI</span>
+              <span className="bg-[#D60036] text-white text-xs font-black px-2 py-0.5 rounded tracking-widest animate-pulse font-heading">
+                TV ARENA
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono tracking-widest uppercase">Arena Championship Live Stream</p>
@@ -45,7 +45,7 @@ export const ArenaTvMode = () => {
         {/* Category Indicator Pill */}
         <div className="text-center">
           <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest block">CATEGORIA EM EXIBIÇÃO</span>
-          <span className="font-heading text-3xl font-black text-[#D4FF00] tracking-wide">
+          <span className="font-heading text-3xl font-black text-white tracking-wide">
             {activeCategory?.name}
           </span>
         </div>
@@ -61,7 +61,7 @@ export const ArenaTvMode = () => {
       </div>
 
       {/* Main Leaderboard Table for TV */}
-      <div className="my-6 flex-1 wod-card p-6 border-[#FF5500]/30 shadow-2xl">
+      <div className="my-6 flex-1 wod-card p-6 border-[#D60036]/30 shadow-2xl">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-white/10 text-slate-400 font-mono text-sm uppercase">
@@ -69,7 +69,7 @@ export const ArenaTvMode = () => {
               <th className="py-4 px-4 w-24 text-center">BIB</th>
               <th className="py-4 px-4 text-xl font-bold text-white">ATLETA / EQUIPE</th>
               <th className="py-4 px-4 text-slate-400">BOX / AFILIADA</th>
-              <th className="py-4 px-4 text-right pr-6 font-bold text-[#D4FF00]">PONTUAÇÃO TOTAL</th>
+              <th className="py-4 px-4 text-right pr-6 font-bold text-[#D60036]">PONTUAÇÃO TOTAL</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -101,7 +101,7 @@ export const ArenaTvMode = () => {
                   </td>
 
                   {/* Bib */}
-                  <td className="py-4 px-4 text-center font-mono text-lg font-bold text-[#D4FF00]">
+                  <td className="py-4 px-4 text-center font-mono text-lg font-bold text-[#D60036]">
                     #{item.athlete.bib}
                   </td>
 
@@ -122,7 +122,7 @@ export const ArenaTvMode = () => {
 
                   {/* Total Points */}
                   <td className="py-4 px-4 text-right pr-6">
-                    <span className="font-heading text-4xl font-black text-[#D4FF00]">
+                    <span className="font-heading text-4xl font-black text-white">
                       {item.totalPoints}
                     </span>
                     <span className="text-sm font-mono text-slate-400 ml-1">pts</span>
@@ -136,8 +136,8 @@ export const ArenaTvMode = () => {
 
       {/* Footer ticker */}
       <div className="flex items-center justify-between text-xs font-mono text-slate-400 border-t border-white/10 pt-4">
-        <span>Transmissão Oficial de Resultados • FitScore Pro</span>
-        <span className="text-[#FF5500] font-bold animate-pulse">● TRANSMISSÃO AO VIVO DA ARENA</span>
+        <span>Transmissão Oficial de Resultados • CrossGames GTI</span>
+        <span className="text-[#D60036] font-bold animate-pulse">● TRANSMISSÃO AO VIVO DA ARENA</span>
       </div>
 
     </div>

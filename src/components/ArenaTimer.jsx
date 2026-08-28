@@ -146,7 +146,7 @@ export const ArenaTimer = () => {
           ) : (
             /* REGULAR TIMER DISPLAY */
             <div className="space-y-3">
-              <div className="font-mono text-7xl sm:text-8xl md:text-[130px] font-black text-[#D4FF00] tracking-tighter leading-none drop-shadow-[0_0_40px_rgba(212,255,0,0.3)]">
+              <div className="font-mono text-7xl sm:text-8xl md:text-[130px] font-black text-[#D60036] tracking-tighter leading-none drop-shadow-[0_0_40px_rgba(214,0,54,0.5)]">
                 {formatTime(secondsLeft)}
               </div>
 

@@ -39,7 +39,7 @@ export const Leaderboard = () => {
       <div className="wod-card p-5 md:p-6 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#FF5500] to-[#D4FF00] text-black flex items-center justify-center font-black shadow-lg">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#D60036] to-slate-200 text-white flex items-center justify-center font-black shadow-lg">
               <Trophy className="w-6 h-6 stroke-[2.5]" />
             </div>
             <div>
@@ -58,7 +58,7 @@ export const Leaderboard = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-heading font-extrabold transition-all whitespace-nowrap ${
                   selectedCategory === cat.id
-                    ? 'bg-gradient-to-r from-[#FF5500] to-[#FF2200] text-white shadow-md font-black'
+                    ? 'bg-gradient-to-r from-[#D60036] to-[#990024] text-white shadow-md font-black'
                     : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
                 }`}
               >
@@ -81,7 +81,7 @@ export const Leaderboard = () => {
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
-              <Award className="w-4 h-4 text-[#D4FF00]" /> CLASSIFICAÇÃO GERAL
+              <Award className="w-4 h-4 text-red-400" /> CLASSIFICAÇÃO GERAL
             </button>
 
             {categoryWods.map(wod => (
@@ -94,7 +94,7 @@ export const Leaderboard = () => {
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Dumbbell className="w-4 h-4 text-[#FF5500]" /> {wod.name}
+                <Dumbbell className="w-4 h-4 text-[#D60036]" /> {wod.name}
               </button>
             ))}
           </div>
@@ -108,7 +108,7 @@ export const Leaderboard = () => {
                 placeholder="Buscar atleta, bib ou box..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#0A0E17] border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#FF5500]"
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#0B0D12] border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#D60036]"
               />
             </div>
 
@@ -328,9 +328,9 @@ export const Leaderboard = () => {
           </div>
         ) : (
           <div className="custom-table-container">
-            <div className="p-4 bg-[#0A0E17] border-b border-white/10 space-y-1">
+            <div className="p-4 bg-[#0B0D12] border-b border-white/10 space-y-1">
               <h3 className="font-heading text-xl font-black text-white flex items-center gap-2">
-                <Dumbbell className="w-5 h-5 text-[#FF5500]" /> {activeWod?.name}
+                <Dumbbell className="w-5 h-5 text-[#D60036]" /> {activeWod?.name}
               </h3>
               <p className="text-xs text-slate-400">{activeWod?.description}</p>
             </div>

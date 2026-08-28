@@ -94,7 +94,7 @@ export const ScoreEntry = () => {
       {/* Header */}
       <div className="wod-card p-5">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/30 flex items-center justify-center text-[#FF5500]">
+          <div className="w-11 h-11 rounded-xl bg-[#D60036]/15 border border-[#D60036]/30 flex items-center justify-center text-[#D60036]">
             <ClipboardCheck className="w-6 h-6" />
           </div>
           <div>
@@ -107,7 +107,7 @@ export const ScoreEntry = () => {
       </div>
 
       {/* Main Score Form */}
-      <div className="wod-card p-5 md:p-6 space-y-5 border-[#FF5500]/30">
+      <div className="wod-card p-5 md:p-6 space-y-5 border-[#D60036]/30">
         
         {successMessage && (
           <div className="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-2 animate-bounce">
@@ -122,7 +122,7 @@ export const ScoreEntry = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <label className="text-xs font-heading font-black text-[#FF5500] uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-xs font-heading font-black text-[#D60036] uppercase tracking-wider flex items-center gap-1.5">
                 <Dumbbell className="w-3.5 h-3.5" /> 1. Selecionar WOD
               </label>
               <select
@@ -131,7 +131,7 @@ export const ScoreEntry = () => {
                   setSelectedWodId(e.target.value);
                   setSelectedAthleteId('');
                 }}
-                className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-[#FF5500]"
+                className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-[#D60036]"
               >
                 {wods.map(w => (
                   <option key={w.id} value={w.id}>
@@ -142,13 +142,13 @@ export const ScoreEntry = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-heading font-black text-[#D4FF00] uppercase tracking-wider flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5" /> 2. Selecionar Atleta
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-red-500" /> 2. Selecionar Atleta
               </label>
               <select
                 value={selectedAthleteId}
                 onChange={(e) => handleAthleteChange(e.target.value)}
-                className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-[#D4FF00]"
+                className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-red-500"
               >
                 <option value="">-- Escolha um Atleta --</option>
                 {wodAthletes.map(a => (
@@ -164,7 +164,7 @@ export const ScoreEntry = () => {
           {/* WOD Standard Reminder */}
           {activeWod && (
             <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-              <span className="wod-chip bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/30 text-[9px]">
+              <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/30 text-[9px]">
                 {activeWod.type.replace('_', ' ')}
               </span>
               <p className="text-xs font-bold text-white">{activeWod.description}</p>
@@ -187,7 +187,7 @@ export const ScoreEntry = () => {
                         type="checkbox"
                         checked={isCap}
                         onChange={(e) => setIsCap(e.target.checked)}
-                        className="w-5 h-5 accent-[#FF5500] rounded cursor-pointer"
+                        className="w-5 h-5 accent-[#D60036] rounded cursor-pointer"
                       />
                       <span className="font-bold text-xs text-slate-200">Estourou Time Cap (CAP)</span>
                     </label>
@@ -203,7 +203,7 @@ export const ScoreEntry = () => {
                           min="0"
                           value={mins}
                           onChange={(e) => setMins(e.target.value)}
-                          className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#FF5500]"
+                          className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#D60036]"
                         />
                         <span className="font-black text-slate-400">:</span>
                         <input
@@ -213,7 +213,7 @@ export const ScoreEntry = () => {
                           max="59"
                           value={secs}
                           onChange={(e) => setSecs(e.target.value)}
-                          className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#FF5500]"
+                          className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#D60036]"
                         />
                       </div>
                     </div>
@@ -226,7 +226,7 @@ export const ScoreEntry = () => {
                           placeholder="Ex: 85"
                           value={reps}
                           onChange={(e) => setReps(e.target.value)}
-                          className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-xl font-black text-[#D4FF00]"
+                          className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-xl font-black text-[#D60036]"
                         />
                         <button type="button" onClick={() => adjustReps(1)} className="p-3 rounded-xl bg-white/10 text-white font-bold hover:bg-white/20">
                           +1
@@ -248,12 +248,12 @@ export const ScoreEntry = () => {
                         placeholder="Ex: 145"
                         value={reps}
                         onChange={(e) => setReps(e.target.value)}
-                        className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-2xl font-black text-[#D4FF00]"
+                        className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-2xl font-black text-[#D60036]"
                       />
                       <button type="button" onClick={() => adjustReps(-1)} className="p-3.5 rounded-xl bg-white/10 text-white font-bold hover:bg-white/20">
                         <Minus className="w-4 h-4" />
                       </button>
-                      <button type="button" onClick={() => adjustReps(1)} className="p-3.5 rounded-xl bg-[#FF5500] text-white font-bold hover:brightness-110">
+                      <button type="button" onClick={() => adjustReps(1)} className="p-3.5 rounded-xl bg-[#D60036] text-white font-bold hover:brightness-110">
                         <Plus className="w-4 h-4" />
                       </button>
                     </div>

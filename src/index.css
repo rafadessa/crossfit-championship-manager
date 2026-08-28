@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg-dark: #0A0E17;
-  --bg-dark-card: rgba(17, 24, 39, 0.75);
-  --bg-dark-card-hover: rgba(30, 41, 59, 0.85);
+  --bg-dark: #0B0D12;
+  --bg-dark-card: rgba(18, 22, 32, 0.85);
+  --bg-dark-card-hover: rgba(30, 36, 52, 0.95);
   
   --border-glass: rgba(255, 255, 255, 0.08);
-  --border-glass-bright: rgba(255, 255, 255, 0.18);
+  --border-glass-bright: rgba(214, 0, 54, 0.35);
   
-  --wod-orange: #FF5500;
-  --wod-orange-glow: rgba(255, 85, 0, 0.3);
-  --volt-citrus: #D4FF00;
-  --volt-citrus-glow: rgba(212, 255, 0, 0.25);
+  --cross-red: #D60036;
+  --cross-red-glow: rgba(214, 0, 54, 0.35);
+  --cross-silver: #E2E8F0;
+  --cross-silver-glow: rgba(226, 232, 240, 0.2);
   --electric-cyan: #00F0FF;
   
   --gold-metal: #FFB800;
@@ -35,9 +35,9 @@
 body {
   background-color: var(--bg-dark);
   background-image: 
-    radial-gradient(ellipse at 50% 0%, rgba(255, 85, 0, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 90% 40%, rgba(212, 255, 0, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 90%, rgba(0, 240, 255, 0.04) 0%, transparent 50%);
+    radial-gradient(ellipse at 50% 0%, rgba(214, 0, 54, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 40%, rgba(226, 232, 240, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 10% 90%, rgba(214, 0, 54, 0.06) 0%, transparent 50%);
   background-attachment: fixed;
   color: #F8FAFC;
   font-family: var(--font-body);
@@ -53,33 +53,33 @@ body {
   font-family: var(--font-mono);
 }
 
-/* Glassmorphism Cards WodEngage Style */
+/* Glassmorphism Cards CrossGames GTI Style */
 .wod-card {
   background: var(--bg-dark-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-glass);
   border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .wod-card:hover {
   border-color: var(--border-glass-bright);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 50px rgba(214, 0, 54, 0.15);
 }
 
-.wod-card-accent-orange {
-  border-left: 4px solid var(--wod-orange);
-  box-shadow: -4px 0 20px rgba(255, 85, 0, 0.15);
+.wod-card-accent-orange, .wod-card-accent-red {
+  border-left: 4px solid var(--cross-red);
+  box-shadow: -4px 0 20px rgba(214, 0, 54, 0.2);
 }
 
-.wod-card-accent-citrus {
-  border-left: 4px solid var(--volt-citrus);
-  box-shadow: -4px 0 20px rgba(212, 255, 0, 0.15);
+.wod-card-accent-citrus, .wod-card-accent-silver {
+  border-left: 4px solid var(--cross-silver);
+  box-shadow: -4px 0 20px rgba(226, 232, 240, 0.15);
 }
 
-/* WodEngage Glowing Buttons */
+/* CrossGames GTI Glowing Buttons */
 .btn-wod {
   display: inline-flex;
   align-items: center;
@@ -100,25 +100,25 @@ body {
 }
 
 .btn-wod-primary {
-  background: linear-gradient(135deg, #FF5500 0%, #FF2200 100%);
+  background: linear-gradient(135deg, #D60036 0%, #990024 100%);
   color: #FFFFFF;
-  box-shadow: 0 6px 20px var(--wod-orange-glow);
+  box-shadow: 0 6px 20px var(--cross-red-glow);
 }
 .btn-wod-primary:hover, .btn-wod-primary:active {
-  background: linear-gradient(135deg, #FF6611 0%, #FF3311 100%);
+  background: linear-gradient(135deg, #EF003C 0%, #B3002B 100%);
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(255, 85, 0, 0.5);
+  box-shadow: 0 8px 25px rgba(214, 0, 54, 0.6);
 }
 
-.btn-wod-citrus {
-  background: linear-gradient(135deg, #D4FF00 0%, #B8E600 100%);
-  color: #0A0E17;
-  box-shadow: 0 6px 20px var(--volt-citrus-glow);
+.btn-wod-citrus, .btn-wod-silver {
+  background: linear-gradient(135deg, #F8FAFC 0%, #CBD5E1 100%);
+  color: #0B0D12;
+  box-shadow: 0 6px 20px var(--cross-silver-glow);
 }
-.btn-wod-citrus:hover, .btn-wod-citrus:active {
-  background: linear-gradient(135deg, #E2FF33 0%, #C4F500 100%);
+.btn-wod-citrus:hover, .btn-wod-citrus:active, .btn-wod-silver:hover {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(212, 255, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
 }
 
 .btn-wod-secondary {
