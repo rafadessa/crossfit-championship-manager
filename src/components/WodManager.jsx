@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { Dumbbell, Plus, Trash2, Clock } from 'lucide-react';
+import { CategoryManagerModal } from './CategoryManagerModal';
+import { Dumbbell, Plus, Trash2, Clock, Tag } from 'lucide-react';
 import { formatTime } from '../utils/scoring';
 
 export const WodManager = () => {
-  const { wods, categories, addWod, deleteWod } = useTournament();
+  const { wods, categories, addWod, deleteWod, isAdminLoggedIn } = useTournament();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     type: 'for_time', // for_time, amrap, emom, max_weight
     timeCapMins: '10',
-    category: 'rx_male',
+    category: categories[0]?.id || 'rx_male',
     repsPerRound: '',
     description: '',
     standards: '',
@@ -37,7 +39,7 @@ export const WodManager = () => {
       name: '',
       type: 'for_time',
       timeCapMins: '10',
-      category: 'rx_male',
+      category: categories[0]?.id || 'rx_male',
       repsPerRound: '',
       description: '',
       standards: '',
@@ -61,12 +63,23 @@ export const WodManager = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="btn-wod btn-wod-primary text-xs self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" /> Criar WOD
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {isAdminLoggedIn && (
+            <button
+              onClick={() => setIsCatModalOpen(true)}
+              className="btn-wod btn-wod-secondary text-xs"
+            >
+              <Tag className="w-4 h-4 text-[#D60036]" /> Categorias
+            </button>
+          )}
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="btn-wod btn-wod-primary text-xs"
+          >
+            <Plus className="w-4 h-4" /> Criar WOD
+          </button>
+        </div>
       </div>
 
       {/* WOD Cards Grid */}
@@ -219,6 +232,12 @@ export const WodManager = () => {
           </div>
         </div>
       )}
+
+      {/* Category Manager Modal */}
+      <CategoryManagerModal
+        isOpen={isCatModalOpen}
+        onClose={() => setIsCatModalOpen(false)}
+      />
 
     </div>
   );

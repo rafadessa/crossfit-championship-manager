@@ -189,6 +189,34 @@ export const TournamentProvider = ({ children }) => {
     setHeats(prev => prev.map(h => h.id === heatId ? { ...h, status } : h));
   };
 
+  // Category CRUD Handlers
+  const addCategory = (name) => {
+    const cleanName = name.trim();
+    if (!cleanName) return;
+    const newCat = {
+      id: `cat-${Date.now()}`,
+      name: cleanName
+    };
+    setCategories(prev => [...prev, newCat]);
+    if (!selectedCategory) {
+      setSelectedCategory(newCat.id);
+    }
+  };
+
+  const deleteCategory = (id) => {
+    if (categories.length <= 1) {
+      alert('É necessário ter ao menos 1 categoria cadastrada no campeonato.');
+      return;
+    }
+    setCategories(prev => {
+      const remaining = prev.filter(c => c.id !== id);
+      if (selectedCategory === id) {
+        setSelectedCategory(remaining[0]?.id || '');
+      }
+      return remaining;
+    });
+  };
+
   // Clear all tournament data (Zerar Dados)
   const clearAllData = () => {
     setWods([]);
@@ -216,6 +244,8 @@ export const TournamentProvider = ({ children }) => {
       loginAdmin,
       logoutAdmin,
       categories,
+      addCategory,
+      deleteCategory,
       wods,
       athletes,
       scores,

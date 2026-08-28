@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { Users, UserPlus, Search, Trash2, Edit, Shield } from 'lucide-react';
+import { CategoryManagerModal } from './CategoryManagerModal';
+import { Users, UserPlus, Search, Trash2, Edit3, Shield, Tag } from 'lucide-react';
 
 export const AthletesManager = () => {
-  const { athletes, categories, addAthlete, updateAthlete, deleteAthlete } = useTournament();
+  const { athletes, categories, addAthlete, updateAthlete, deleteAthlete, isAdminLoggedIn } = useTournament();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [editingAthlete, setEditingAthlete] = useState(null);
 
   const [formData, setFormData] = useState({
     bib: '',
     name: '',
     box: '',
-    category: 'rx_male'
+    category: categories[0]?.id || 'rx_male'
   });
 
   const filteredAthletes = athletes.filter(athlete => {
@@ -31,7 +33,7 @@ export const AthletesManager = () => {
       bib: String(athletes.length + 101),
       name: '',
       box: '',
-      category: 'rx_male'
+      category: categories[0]?.id || 'rx_male'
     });
     setIsModalOpen(true);
   };
@@ -76,12 +78,23 @@ export const AthletesManager = () => {
             </p>
           </div>
 
-          <button
-            onClick={handleOpenAddModal}
-            className="btn-wod btn-wod-primary text-xs self-start sm:self-auto"
-          >
-            <UserPlus className="w-4 h-4" /> Novo Atleta
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            {isAdminLoggedIn && (
+              <button
+                onClick={() => setIsCatModalOpen(true)}
+                className="btn-wod btn-wod-secondary text-xs"
+              >
+                <Tag className="w-4 h-4 text-[#D60036]" /> Categorias
+              </button>
+            )}
+
+            <button
+              onClick={handleOpenAddModal}
+              className="btn-wod btn-wod-primary text-xs"
+            >
+              <UserPlus className="w-4 h-4" /> Novo Atleta
+            </button>
+          </div>
         </div>
 
         {/* Filter and Search Bar */}
@@ -297,7 +310,7 @@ export const AthletesManager = () => {
                 <select
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#FF5500]"
+                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
                 >
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -324,6 +337,12 @@ export const AthletesManager = () => {
           </div>
         </div>
       )}
+
+      {/* Category Manager Modal */}
+      <CategoryManagerModal
+        isOpen={isCatModalOpen}
+        onClose={() => setIsCatModalOpen(false)}
+      />
 
     </div>
   );
