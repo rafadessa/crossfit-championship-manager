@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { CategoryManagerModal } from './CategoryManagerModal';
-import { Dumbbell, Plus, Trash2, Clock, Tag } from 'lucide-react';
+import { Modal } from './Modal';
+import { Dumbbell, Plus, Trash2, Clock, Tag, X } from 'lucide-react';
 import { formatTime } from '../utils/scoring';
 
 export const WodManager = () => {
@@ -11,7 +12,7 @@ export const WodManager = () => {
   const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    type: 'for_time', // for_time, amrap, emom, max_weight
+    type: 'for_time',
     timeCapMins: '10',
     category: categories[0]?.id || 'rx_male',
     repsPerRound: '',
@@ -139,181 +140,177 @@ export const WodManager = () => {
         })}
       </div>
 
-      {/* Responsive Create WOD Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/85 backdrop-blur-md p-4 flex min-h-full items-center justify-center animate-fade-in">
-          <div className="wod-card p-6 max-w-2xl w-full space-y-5 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-2xl my-auto">
-            
-            {/* Mobile Drag Indicator Bar */}
-            <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto md:hidden -mt-1 mb-2"></div>
+      {/* Create WOD Modal - uses Portal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="max-w-2xl">
+        <div className="p-6 space-y-5">
+          
+          {/* Modal Header */}
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#D60036]/20 border border-[#D60036]/40 flex items-center justify-center text-[#D60036]">
+                <Dumbbell className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="font-heading text-xl font-black text-white">CRIAR NOVO WOD</h2>
+                <p className="text-xs text-slate-400">Preencha as especificações da prova</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-[#D60036]/20 border border-[#D60036]/40 flex items-center justify-center text-[#D60036]">
-                  <Dumbbell className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="font-heading text-xl md:text-2xl font-black text-white">Criar Novo WOD</h2>
-                  <p className="text-xs text-slate-400">Preencha as especificações da prova</p>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            
+            {/* Step 1: Nome do WOD */}
+            <div className="space-y-2">
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
+                1. Nome do WOD / Prova
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Ex: WOD 1 - AIR & ICE (ou 21-15-9)"
+                value={formData.name}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-sm font-bold focus:border-[#D60036] focus:outline-none"
+                autoFocus
+              />
+            </div>
+
+            {/* Step 2: WOD Type Cards */}
+            <div className="space-y-2">
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
+                2. Formato da Prova (Tipo)
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { id: 'for_time', label: 'For Time', desc: 'Menor Tempo', icon: '⏱️' },
+                  { id: 'amrap', label: 'AMRAP', desc: 'Mais Reps', icon: '🔄' },
+                  { id: 'max_weight', label: 'Max Weight', desc: 'Carga Máxima', icon: '🏋️' },
+                  { id: 'emom', label: 'EMOM', desc: 'Por Minuto', icon: '⏰' }
+                ].map(t => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, type: t.id })}
+                    className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all h-20 ${
+                      formData.type === t.id
+                        ? 'bg-[#D60036]/20 border-[#D60036] text-white shadow-lg'
+                        : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                    }`}
+                  >
+                    <span className="text-base">{t.icon}</span>
+                    <div>
+                      <p className="font-heading text-xs font-black leading-none">{t.label}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">{t.desc}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 3: Time Cap & Category */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
+                  3. Time Cap (Minutos)
+                </label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, timeCapMins: String(Math.max(1, (parseInt(prev.timeCapMins) || 10) - 1)) }))}
+                    className="h-12 w-12 rounded-xl bg-white/10 text-white font-bold text-lg flex items-center justify-center shrink-0 hover:bg-white/20"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max="180"
+                    required
+                    value={formData.timeCapMins}
+                    onChange={e => setFormData({ ...formData, timeCapMins: e.target.value })}
+                    className="flex-1 h-12 bg-[#0B0D12] border border-white/20 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#D60036] focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, timeCapMins: String((parseInt(prev.timeCapMins) || 10) + 1) }))}
+                    className="h-12 w-12 rounded-xl bg-[#D60036] text-white font-bold text-lg flex items-center justify-center shrink-0 hover:brightness-110"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
+                  4. Categoria
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={e => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
+                >
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Step 4: Descrição */}
+            <div className="space-y-2">
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
+                5. Descrição do WOD & Cargas
+              </label>
+              <textarea
+                rows="4"
+                placeholder={"Ex: 12 Min AMRAP:\n- 15 Thrusters (60kg)\n- 15 Chest-to-Bar\n- 20 Cal Row"}
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                className="w-full p-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-mono focus:border-[#D60036] focus:outline-none leading-relaxed"
+              />
+            </div>
+
+            {/* Step 5: Tie-break */}
+            <div className="space-y-2">
+              <label className="text-xs font-heading font-black text-slate-300 uppercase tracking-wider block">
+                6. Regra de Desempate (opcional)
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: Tempo ao concluir a rodada 1"
+                value={formData.tiebreakRule}
+                onChange={e => setFormData({ ...formData, tiebreakRule: e.target.value })}
+                className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-mono focus:border-[#D60036] focus:outline-none"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10"
+                className="h-12 px-6 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white text-xs font-heading font-bold"
               >
-                ✕ Fechar
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="h-12 px-8 rounded-xl bg-[#D60036] text-white text-sm font-heading font-black hover:brightness-110 shadow-lg shadow-[#D60036]/30 flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" /> Salvar WOD
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              
-              {/* Step 1: Nome do WOD */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
-                  1. Nome do WOD / Prova
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ex: WOD 1 - AIR & ICE (ou 21-15-9)"
-                  value={formData.name}
-                  onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-sm font-bold focus:border-[#D60036] focus:outline-none"
-                  autoFocus
-                />
-              </div>
-
-              {/* Step 2: Visual Radio Cards for WOD Type */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
-                  2. Formato da Prova (Tipo)
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    { id: 'for_time', label: 'For Time', desc: 'Menor Tempo', icon: '⏱️' },
-                    { id: 'amrap', label: 'AMRAP', desc: 'Mais Reps', icon: '🔄' },
-                    { id: 'max_weight', label: 'Max Weight', desc: 'Carga Máxima', icon: '🏋️' },
-                    { id: 'emom', label: 'EMOM', desc: 'Por Minuto', icon: '⏰' }
-                  ].map(t => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, type: t.id })}
-                      className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all h-20 ${
-                        formData.type === t.id
-                          ? 'bg-[#D60036]/20 border-[#D60036] text-white shadow-lg'
-                          : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
-                      }`}
-                    >
-                      <span className="text-base">{t.icon}</span>
-                      <div>
-                        <p className="font-heading text-xs font-black leading-none">{t.label}</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">{t.desc}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Step 3: Time Cap & Category */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
-                    3. Time Cap (Minutos)
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, timeCapMins: String(Math.max(1, (parseInt(prev.timeCapMins) || 10) - 1)) }))}
-                      className="h-12 w-12 rounded-xl bg-white/10 text-white font-bold text-lg flex items-center justify-center shrink-0 hover:bg-white/20"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      min="1"
-                      max="180"
-                      required
-                      value={formData.timeCapMins}
-                      onChange={e => setFormData({ ...formData, timeCapMins: e.target.value })}
-                      className="flex-1 h-12 bg-[#0B0D12] border border-white/20 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#D60036] focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, timeCapMins: String((parseInt(prev.timeCapMins) || 10) + 1) }))}
-                      className="h-12 w-12 rounded-xl bg-[#D60036] text-white font-bold text-lg flex items-center justify-center shrink-0 hover:brightness-110"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
-                    4. Categoria Atribuída
-                  </label>
-                  <select
-                    value={formData.category}
-                    onChange={e => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
-                  >
-                    {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Step 4: Descrição & Cargas */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
-                  5. Descrição do WOD & Cargas
-                </label>
-                <textarea
-                  rows="4"
-                  placeholder="Ex: 12 Min AMRAP:\n- 15 Thrusters (60kg)\n- 15 Chest-to-Bar\n- 20 Cal Row"
-                  value={formData.description}
-                  onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full p-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-mono focus:border-[#D60036] focus:outline-none leading-relaxed"
-                ></textarea>
-              </div>
-
-              {/* Step 5: Tie-break Rule */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-heading font-black text-slate-300 uppercase tracking-wider block">
-                  6. Regra de Desempate (Tie-break)
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex: Tempo ao concluir a rodada 1"
-                  value={formData.tiebreakRule}
-                  onChange={e => setFormData({ ...formData, tiebreakRule: e.target.value })}
-                  className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-mono focus:border-[#D60036] focus:outline-none"
-                />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="h-12 px-6 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white text-xs font-heading font-bold"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="h-12 px-8 rounded-xl bg-[#D60036] text-white text-sm font-heading font-black hover:brightness-110 shadow-lg shadow-[#D60036]/30 flex items-center gap-2"
-                >
-                  <Plus className="w-5 h-5" /> Salvar WOD
-                </button>
-              </div>
-
-            </form>
-          </div>
+          </form>
         </div>
-      )}
+      </Modal>
 
       {/* Category Manager Modal */}
       <CategoryManagerModal

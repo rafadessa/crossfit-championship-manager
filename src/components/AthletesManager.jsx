@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { CategoryManagerModal } from './CategoryManagerModal';
-import { Users, UserPlus, Search, Trash2, Edit3, Shield, Tag } from 'lucide-react';
+import { Modal } from './Modal';
+import { Users, UserPlus, Search, Trash2, Edit3, Shield, Tag, X } from 'lucide-react';
 
 export const AthletesManager = () => {
   const { athletes, categories, addAthlete, updateAthlete, deleteAthlete, isAdminLoggedIn } = useTournament();
@@ -258,96 +259,98 @@ export const AthletesManager = () => {
         </div>
       </div>
 
-      {/* Athlete / Dupla Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 p-4 bg-black/85 backdrop-blur-md flex items-center justify-center animate-fade-in">
-          <div className="wod-card p-6 max-w-md w-full space-y-4 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-2xl max-h-[85vh] overflow-y-auto">
-
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h2 className="font-heading text-xl font-black text-white flex items-center gap-2">
-                <UserPlus className="w-6 h-6 text-[#D60036]" />
-                {editingAthlete ? 'Editar Dupla' : 'Nova Dupla'}
-              </h2>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-1 col-span-1">
-                  <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">BIB (#)</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="101"
-                    value={formData.bib}
-                    onChange={e => setFormData({ ...formData, bib: e.target.value })}
-                    className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-sm font-mono font-bold text-center focus:border-[#D60036] focus:outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1 col-span-2">
-                  <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Nome da Dupla</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ex: João & Maria"
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
-                    autoFocus
-                  />
-                </div>
+      {/* Athlete / Dupla Modal - uses Portal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="max-w-md">
+        <div className="p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#D60036]/20 border border-[#D60036]/40 flex items-center justify-center text-[#D60036]">
+                <UserPlus className="w-5 h-5" />
               </div>
+              <div>
+                <h2 className="font-heading text-xl font-black text-white">{editingAthlete ? 'Editar Dupla' : 'Nova Dupla'}</h2>
+                <p className="text-xs text-slate-400">Preencha os dados da dupla</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Box / CT Afiliado</label>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-2 col-span-1">
+                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">BIB (#)</label>
                 <input
                   type="text"
-                  placeholder="Ex: CrossFit IronBox"
-                  value={formData.box}
-                  onChange={e => setFormData({ ...formData, box: e.target.value })}
-                  className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs focus:border-[#D60036] focus:outline-none"
+                  required
+                  placeholder="101"
+                  value={formData.bib}
+                  onChange={e => setFormData({ ...formData, bib: e.target.value })}
+                  className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-sm font-mono font-bold text-center focus:border-[#D60036] focus:outline-none"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Categoria</label>
-                <select
-                  value={formData.category}
-                  onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
-                >
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
+              <div className="space-y-2 col-span-2">
+                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Nome da Dupla</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: João & Maria"
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
+                  autoFocus
+                />
               </div>
+            </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="h-12 px-5 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white text-xs font-heading font-bold"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="h-12 px-6 rounded-xl bg-[#D60036] text-white text-xs font-heading font-black hover:brightness-110 shadow-lg shadow-[#D60036]/30"
-                >
-                  {editingAthlete ? 'Atualizar Dupla' : 'Salvar Dupla'}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="space-y-2">
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Box / CT Afiliado</label>
+              <input
+                type="text"
+                placeholder="Ex: CrossFit IronBox"
+                value={formData.box}
+                onChange={e => setFormData({ ...formData, box: e.target.value })}
+                className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs focus:border-[#D60036] focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Categoria</label>
+              <select
+                value={formData.category}
+                onChange={e => setFormData({ ...formData, category: e.target.value })}
+                className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
+              >
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="h-12 px-5 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white text-xs font-heading font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="h-12 px-6 rounded-xl bg-[#D60036] text-white text-xs font-heading font-black hover:brightness-110 shadow-lg shadow-[#D60036]/30"
+              >
+                {editingAthlete ? 'Atualizar Dupla' : 'Salvar Dupla'}
+              </button>
+            </div>
+          </form>
         </div>
-      )}
+      </Modal>
 
       {/* Category Manager Modal */}
       <CategoryManagerModal
