@@ -15,8 +15,8 @@ import {
   Sparkles,
   X,
   Share,
-  PlusSquare,
-  Flame
+  Flame,
+  Database
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -29,7 +29,8 @@ export const Navbar = () => {
     loadSampleData,
     triggerPwaInstall,
     showIosInstallModal,
-    setShowIosInstallModal
+    setShowIosInstallModal,
+    isSupabaseConfigured
   } = useTournament();
 
   const navItems = [
@@ -127,6 +128,19 @@ export const Navbar = () => {
 
           {/* Action Buttons: PWA Install, Admin & TV Mode */}
           <div className="flex items-center gap-2">
+
+            {/* Supabase / DB Status Badge */}
+            <div 
+              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-heading font-black tracking-wide ${
+                isSupabaseConfigured
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                  : 'bg-white/5 border-white/10 text-slate-400'
+              }`}
+              title={isSupabaseConfigured ? 'Banco de dados Supabase Conectado' : 'Operando em Modo Local (LocalStorage)'}
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span>{isSupabaseConfigured ? 'Supabase Live' : 'Modo Local'}</span>
+            </div>
 
             {/* Install App Button */}
             <button

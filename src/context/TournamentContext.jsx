@@ -6,6 +6,7 @@ import {
   INITIAL_SCORES, 
   INITIAL_HEATS 
 } from '../utils/sampleData';
+import { supabase, isSupabaseConfigured } from '../utils/supabaseClient';
 
 const TournamentContext = createContext();
 
@@ -362,6 +363,7 @@ export const TournamentProvider = ({ children }) => {
       loadSampleData,
       exportTournamentData,
       importTournamentData,
+      isSupabaseConfigured,
       isInstallable,
       triggerPwaInstall,
       showIosInstallModal,
@@ -369,9 +371,6 @@ export const TournamentProvider = ({ children }) => {
     }}>
       {children}
     </TournamentContext.Provider>
-  );
-};
-
   );
 };
 
