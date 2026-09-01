@@ -136,13 +136,10 @@ export const HeatManager = () => {
         })}
       </div>
 
-      {/* Modal Criar Bateria Drawer */}
+      {/* Modal Criar Bateria */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-4 flex flex-col justify-end md:justify-center md:items-center animate-fade-in">
-          <div className="wod-card p-5 md:p-6 max-w-lg w-full space-y-4 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-t-3xl md:rounded-2xl max-h-[90vh] overflow-y-auto my-0 md:my-auto">
-            
-            {/* Mobile Drag Indicator Bar */}
-            <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto md:hidden -mt-1 mb-2"></div>
+        <div className="fixed inset-0 z-50 p-4 bg-black/85 backdrop-blur-md flex items-center justify-center animate-fade-in">
+          <div className="wod-card p-6 max-w-lg w-full space-y-4 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-2xl max-h-[85vh] overflow-y-auto">
 
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h2 className="font-heading text-xl font-black text-white flex items-center gap-2">

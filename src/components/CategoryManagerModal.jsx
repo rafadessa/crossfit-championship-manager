@@ -43,16 +43,13 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-4 flex flex-col justify-end md:justify-center md:items-center animate-fade-in">
+    <div className="fixed inset-0 z-50 p-4 bg-black/85 backdrop-blur-md flex items-center justify-center animate-fade-in">
       
-      <div className="wod-card p-5 md:p-6 max-w-lg w-full space-y-5 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-t-3xl md:rounded-2xl max-h-[90vh] overflow-y-auto my-0 md:my-auto">
+      <div className="wod-card p-6 max-w-lg w-full space-y-5 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-2xl max-h-[85vh] flex flex-col">
         
-        {/* Mobile Drag Indicator Bar */}
-        <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto md:hidden -mt-1 mb-2"></div>
-
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4 shrink-0">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#D60036]/20 border border-[#D60036]/40 flex items-center justify-center text-[#D60036]">
               <Tag className="w-5 h-5" />
             </div>
@@ -64,14 +61,14 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10"
+            className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form: Add New Category */}
-        <form onSubmit={handleAdd} className="space-y-2">
+        <form onSubmit={handleAdd} className="space-y-2 shrink-0">
           <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
             Nova Categoria
           </label>
@@ -94,12 +91,12 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
         </form>
 
         {/* Existing Categories List */}
-        <div className="space-y-2">
-          <label className="text-xs font-heading font-black text-slate-400 uppercase tracking-wider block">
+        <div className="space-y-2 flex-1 overflow-hidden flex flex-col min-h-0">
+          <label className="text-xs font-heading font-black text-slate-400 uppercase tracking-wider block shrink-0">
             Categorias Cadastradas ({categories.length})
           </label>
 
-          <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+          <div className="space-y-2 flex-1 overflow-y-auto pr-1">
             {categories.map((cat) => {
               const athleteCount = athletes.filter((a) => a.category === cat.id).length;
               const wodCount = wods.filter((w) => w.category === cat.id).length;
@@ -123,7 +120,7 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
                         <button
                           type="button"
                           onClick={() => handleSaveEdit(cat.id)}
-                          className="h-10 px-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 font-bold text-xs flex items-center gap-1"
+                          className="h-10 px-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 font-bold text-xs flex items-center gap-1 shrink-0"
                         >
                           <Check className="w-4 h-4" /> Salvar
                         </button>
@@ -144,7 +141,7 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
                   </div>
 
                   {!isEditing && (
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={() => handleStartEdit(cat)}
@@ -175,7 +172,7 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Modal Footer */}
-        <div className="border-t border-white/10 pt-3 flex justify-end">
+        <div className="border-t border-white/10 pt-4 flex justify-end shrink-0">
           <button
             onClick={onClose}
             className="w-full sm:w-auto h-12 px-6 rounded-xl bg-white/10 text-white font-heading font-bold text-xs hover:bg-white/20"
