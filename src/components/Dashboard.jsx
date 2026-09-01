@@ -29,13 +29,30 @@ export const Dashboard = () => {
     selectedCategory,
     isAdminLoggedIn,
     loadSampleData,
-    triggerPwaInstall
+    triggerPwaInstall,
+    exportTournamentData,
+    importTournamentData
   } = useTournament();
 
   const currentCategoryObj = categories.find(c => c.id === selectedCategory) || categories[0];
   const standings = calculateOverallStandings(selectedCategory, athletes, wods, scores);
 
   const hasData = athletes.length > 0 || wods.length > 0;
+
+  const handleFileImport = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        importTournamentData(json);
+      } catch (err) {
+        alert('Arquivo JSON inválido.');
+      }
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="space-y-6 animate-fade-in relative">
@@ -66,7 +83,7 @@ export const Dashboard = () => {
             </h1>
             
             <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl">
-              Gestão oficial de leaderboard em tempo real, baterias de atletas, área do juiz responsiva para celular e cronômetro com aviso sonoro para arena.
+              Gestão oficial de leaderboard em tempo real, baterias de duplas, área do juiz responsiva para celular e cronômetro com aviso sonoro para arena.
             </p>
 
             {/* Action Buttons */}
@@ -92,6 +109,17 @@ export const Dashboard = () => {
                   >
                     <PlusCircle className="w-4 h-4" /> Cadastrar WOD
                   </button>
+                  <button
+                    onClick={exportTournamentData}
+                    className="btn-wod bg-slate-800 text-slate-200 border border-white/20 hover:bg-slate-700"
+                    title="Exportar backup dos dados em arquivo JSON"
+                  >
+                    <Download className="w-4 h-4 text-amber-400" /> Exportar Backup
+                  </button>
+                  <label className="btn-wod bg-slate-800 text-slate-200 border border-white/20 hover:bg-slate-700 cursor-pointer">
+                    📥 Importar Backup
+                    <input type="file" accept=".json" onChange={handleFileImport} className="hidden" />
+                  </label>
                 </>
               ) : (
                 <button 
@@ -131,7 +159,7 @@ export const Dashboard = () => {
           <div className="max-w-md mx-auto space-y-1">
             <h3 className="font-heading text-2xl font-black text-white">Nenhum dado cadastrado</h3>
             <p className="text-xs text-slate-400">
-              O campeonato está limpo e pronto. Cadastre seus WODs e atletas ou carregue a demonstração para testar.
+              O campeonato está limpo e pronto. Cadastre seus WODs e duplas ou carregue a demonstração para testar.
             </p>
           </div>
 
@@ -148,7 +176,7 @@ export const Dashboard = () => {
                   onClick={() => setActiveTab('athletes')}
                   className="btn-wod btn-wod-silver text-xs py-2 px-4"
                 >
-                  <Users className="w-4 h-4 text-black" /> Criar Atleta
+                  <Users className="w-4 h-4 text-black" /> Criar Dupla
                 </button>
               </>
             ) : (
@@ -177,7 +205,7 @@ export const Dashboard = () => {
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-[10px] font-heading font-extrabold text-slate-400 uppercase tracking-wider">Atletas</p>
+            <p className="text-[10px] font-heading font-extrabold text-slate-400 uppercase tracking-wider">Duplas</p>
             <p className="font-heading text-3xl font-black text-white">{athletes.length}</p>
           </div>
         </div>

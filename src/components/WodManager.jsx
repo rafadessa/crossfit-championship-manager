@@ -141,11 +141,20 @@ export const WodManager = () => {
 
       {/* Create WOD Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="wod-card p-6 max-w-xl w-full space-y-4 border-[#D60036]/40">
-            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
-              <Dumbbell className="w-6 h-6 text-[#D60036]" /> Criar Novo WOD
-            </h2>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-4 flex min-h-full items-center justify-center animate-fade-in">
+          <div className="wod-card p-5 sm:p-6 max-w-xl w-full space-y-4 border-[#D60036]/40 my-auto max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <h2 className="font-heading text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                <Dumbbell className="w-6 h-6 text-[#D60036]" /> Criar Novo WOD
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              >
+                ✕
+              </button>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="space-y-1">
@@ -157,6 +166,7 @@ export const WodManager = () => {
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
+                  autoFocus
                 />
               </div>
 
@@ -211,6 +221,17 @@ export const WodManager = () => {
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-mono focus:border-[#D60036]"
                 ></textarea>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Regra de Tie-break (Opcional)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Tempo ao concluir a rodada 1"
+                  value={formData.tiebreakRule}
+                  onChange={e => setFormData({ ...formData, tiebreakRule: e.target.value })}
+                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-mono focus:border-[#D60036]"
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-2">

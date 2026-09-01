@@ -92,7 +92,7 @@ export const HeatManager = () => {
 
               {/* Lanes Table */}
               <div className="space-y-2">
-                <p className="text-[11px] font-heading font-black text-slate-400 uppercase tracking-wider">Atletas por Raia:</p>
+                <p className="text-[11px] font-heading font-black text-slate-400 uppercase tracking-wider">Duplas por Raia:</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {heat.lanes.map(laneItem => {
                     const athlete = athletes.find(a => a.id === laneItem.athleteId);
@@ -138,9 +138,9 @@ export const HeatManager = () => {
 
       {/* Modal Criar Bateria */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="wod-card p-6 max-w-lg w-full space-y-4 border-[#D60036]/40">
-            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-4 flex min-h-full items-center justify-center animate-fade-in">
+          <div className="wod-card p-6 max-w-lg w-full space-y-4 border-[#D60036]/40 my-auto max-h-[85vh] overflow-y-auto shadow-2xl">
+            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2 border-b border-white/10 pb-3">
               <Layers className="w-6 h-6 text-[#D60036]" /> Criar Nova Bateria
             </h2>
 
@@ -151,10 +151,11 @@ export const HeatManager = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Bateria 1 - RX Masculino"
+                  placeholder="Ex: Bateria 1 - Dupla RX"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
+                  autoFocus
                 />
               </div>
 

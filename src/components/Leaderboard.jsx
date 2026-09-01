@@ -105,7 +105,7 @@ export const Leaderboard = () => {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Buscar atleta, bib ou box..."
+                placeholder="Buscar dupla, bib ou box..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#0B0D12] border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#D60036]"
@@ -129,7 +129,7 @@ export const Leaderboard = () => {
         {selectedWodId === 'OVERALL' ? (
           filteredOverall.length === 0 ? (
             <div className="wod-card p-8 text-center text-slate-500 text-xs">
-              Nenhum atleta nesta categoria.
+              Nenhuma dupla nesta categoria.
             </div>
           ) : (
             filteredOverall.map((item) => {
@@ -235,7 +235,7 @@ export const Leaderboard = () => {
                 <tr>
                   <th className="w-16 text-center">POS</th>
                   <th className="w-16 text-center">BIB</th>
-                  <th>ATLETA / EQUIPE</th>
+                  <th>DUPLA / EQUIPE</th>
                   <th>BOX / AFILIADA</th>
                   {categoryWods.map(wod => (
                     <th key={wod.id} className="text-center min-w-[120px]">
@@ -250,7 +250,7 @@ export const Leaderboard = () => {
                 {filteredOverall.length === 0 ? (
                   <tr>
                     <td colSpan={5 + categoryWods.length} className="text-center py-12 text-slate-500">
-                      Nenhum atleta cadastrado nesta categoria.
+                      Nenhuma dupla cadastrada nesta categoria.
                     </td>
                   </tr>
                 ) : (
@@ -340,7 +340,7 @@ export const Leaderboard = () => {
                 <tr>
                   <th className="w-16 text-center">POS</th>
                   <th className="w-16 text-center">BIB</th>
-                  <th>ATLETA</th>
+                  <th>DUPLA</th>
                   <th>BOX</th>
                   <th className="text-center">RESULTADO PROVA</th>
                   <th className="text-center">TIE-BREAK</th>

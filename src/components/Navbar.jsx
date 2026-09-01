@@ -36,7 +36,7 @@ export const Navbar = () => {
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
     { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, badge: 'LIVE', public: true },
     { id: 'wods', label: 'WODs', icon: Dumbbell, public: false },
-    { id: 'athletes', label: 'Atletas', icon: Users, public: false },
+    { id: 'athletes', label: 'Duplas', icon: Users, public: false },
     { id: 'judge', label: 'Área do Juiz', icon: ClipboardCheck, public: false },
     { id: 'heats', label: 'Baterias', icon: Layers, public: false },
     { id: 'timer', label: 'Timer Arena', icon: Timer, public: true },

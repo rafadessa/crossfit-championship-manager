@@ -86,30 +86,83 @@ export const TournamentProvider = ({ children }) => {
     }
   };
 
-  // Sync state to LocalStorage
+  // BroadcastChannel and window storage listener for real-time multi-tab/window sync
+  useEffect(() => {
+    let bc;
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        bc = new BroadcastChannel('fitscore_sync_channel');
+        bc.onmessage = (event) => {
+          if (event.data && event.data.type === 'SYNC_STATE') {
+            const { categories, wods, athletes, scores, heats } = event.data.payload;
+            if (categories) setCategories(categories);
+            if (wods) setWods(wods);
+            if (athletes) setAthletes(athletes);
+            if (scores) setScores(scores);
+            if (heats) setHeats(heats);
+          }
+        };
+      }
+    } catch (err) {
+      console.warn('BroadcastChannel not supported:', err);
+    }
 
+    const handleStorageEvent = (e) => {
+      if (e.key === 'fitscore_categories' && e.newValue) setCategories(JSON.parse(e.newValue));
+      if (e.key === 'fitscore_wods' && e.newValue) setWods(JSON.parse(e.newValue));
+      if (e.key === 'fitscore_athletes' && e.newValue) setAthletes(JSON.parse(e.newValue));
+      if (e.key === 'fitscore_scores' && e.newValue) setScores(JSON.parse(e.newValue));
+      if (e.key === 'fitscore_heats' && e.newValue) setHeats(JSON.parse(e.newValue));
+    };
+
+    window.addEventListener('storage', handleStorageEvent);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageEvent);
+      if (bc) bc.close();
+    };
+  }, []);
+
+  const broadcastStateChange = (payload) => {
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('fitscore_sync_channel');
+        bc.postMessage({ type: 'SYNC_STATE', payload });
+        bc.close();
+      }
+    } catch (err) {
+      console.warn('Broadcast failed:', err);
+    }
+  };
+
+  // Sync state to LocalStorage & broadcast
   useEffect(() => {
     localStorage.setItem('fitscore_admin_auth', isAdminLoggedIn ? 'true' : 'false');
   }, [isAdminLoggedIn]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_categories', JSON.stringify(categories));
+    broadcastStateChange({ categories });
   }, [categories]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_wods', JSON.stringify(wods));
+    broadcastStateChange({ wods });
   }, [wods]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_athletes', JSON.stringify(athletes));
+    broadcastStateChange({ athletes });
   }, [athletes]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_scores', JSON.stringify(scores));
+    broadcastStateChange({ scores });
   }, [scores]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_heats', JSON.stringify(heats));
+    broadcastStateChange({ heats });
   }, [heats]);
 
   // Admin Auth Handlers
@@ -203,6 +256,12 @@ export const TournamentProvider = ({ children }) => {
     }
   };
 
+  const updateCategory = (id, newName) => {
+    const cleanName = newName.trim();
+    if (!cleanName) return;
+    setCategories(prev => prev.map(c => c.id === id ? { ...c, name: cleanName } : c));
+  };
+
   const deleteCategory = (id) => {
     if (categories.length <= 1) {
       alert('É necessário ter ao menos 1 categoria cadastrada no campeonato.');
@@ -215,6 +274,39 @@ export const TournamentProvider = ({ children }) => {
       }
       return remaining;
     });
+  };
+
+  // Export / Import Tournament JSON
+  const exportTournamentData = () => {
+    const data = {
+      categories,
+      wods,
+      athletes,
+      scores,
+      heats,
+      exportedAt: new Date().toISOString()
+    };
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `crossgames-gti-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importTournamentData = (jsonObj) => {
+    try {
+      if (jsonObj.categories) setCategories(jsonObj.categories);
+      if (jsonObj.wods) setWods(jsonObj.wods);
+      if (jsonObj.athletes) setAthletes(jsonObj.athletes);
+      if (jsonObj.scores) setScores(jsonObj.scores);
+      if (jsonObj.heats) setHeats(jsonObj.heats);
+      alert('Dados do campeonato importados com sucesso!');
+    } catch (e) {
+      alert('Erro ao importar arquivo JSON de dados.');
+    }
   };
 
   // Clear all tournament data (Zerar Dados)
@@ -245,6 +337,7 @@ export const TournamentProvider = ({ children }) => {
       logoutAdmin,
       categories,
       addCategory,
+      updateCategory,
       deleteCategory,
       wods,
       athletes,
@@ -267,6 +360,8 @@ export const TournamentProvider = ({ children }) => {
       updateHeatStatus,
       clearAllData,
       loadSampleData,
+      exportTournamentData,
+      importTournamentData,
       isInstallable,
       triggerPwaInstall,
       showIosInstallModal,
@@ -274,6 +369,8 @@ export const TournamentProvider = ({ children }) => {
     }}>
       {children}
     </TournamentContext.Provider>
+  );
+};
 
   );
 };

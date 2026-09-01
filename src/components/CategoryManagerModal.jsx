@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { X, Plus, Trash2, Tag, Users, Dumbbell, AlertTriangle } from 'lucide-react';
+import { X, Plus, Trash2, Tag, Users, Dumbbell, Edit3, Check } from 'lucide-react';
 
 export const CategoryManagerModal = ({ isOpen, onClose }) => {
-  const { categories, addCategory, deleteCategory, athletes, wods } = useTournament();
+  const { categories, addCategory, updateCategory, deleteCategory, athletes, wods } = useTournament();
   const [newCatName, setNewCatName] = useState('');
+  const [editingCatId, setEditingCatId] = useState(null);
+  const [editingCatName, setEditingCatName] = useState('');
 
   if (!isOpen) return null;
 
@@ -15,13 +17,24 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
     setNewCatName('');
   };
 
+  const handleStartEdit = (cat) => {
+    setEditingCatId(cat.id);
+    setEditingCatName(cat.name);
+  };
+
+  const handleSaveEdit = (catId) => {
+    if (!editingCatName.trim()) return;
+    updateCategory(catId, editingCatName);
+    setEditingCatId(null);
+  };
+
   const handleDelete = (cat) => {
     const athleteCount = athletes.filter(a => a.category === cat.id).length;
     const wodCount = wods.filter(w => w.category === cat.id).length;
 
     let warningText = `Deseja realmente excluir a categoria "${cat.name}"?`;
     if (athleteCount > 0 || wodCount > 0) {
-      warningText += `\n\nAtenção: Existem ${athleteCount} atleta(s) e ${wodCount} WOD(s) vinculados a esta categoria.`;
+      warningText += `\n\nAtenção: Existem ${athleteCount} dupla(s) e ${wodCount} WOD(s) vinculados a esta categoria.`;
     }
 
     if (window.confirm(warningText)) {
@@ -30,8 +43,8 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="wod-card p-6 max-w-lg w-full space-y-5 border-[#D60036]/40 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-4 flex min-h-full items-center justify-center animate-fade-in">
+      <div className="wod-card p-6 max-w-lg w-full space-y-5 border-[#D60036]/40 shadow-2xl relative my-auto max-h-[85vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
@@ -41,7 +54,7 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
             </div>
             <div>
               <h2 className="font-heading text-xl font-black text-white">GERENCIAR CATEGORIAS</h2>
-              <p className="text-xs text-slate-400">Adicione ou remova categorias do campeonato</p>
+              <p className="text-xs text-slate-400">Adicione, edite ou remova categorias do campeonato</p>
             </div>
           </div>
 
@@ -62,7 +75,7 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
             <input
               type="text"
               required
-              placeholder="Ex: Master 40+, Trio RX..."
+              placeholder="Ex: Dupla RX, Dupla Scaled..."
               value={newCatName}
               onChange={(e) => setNewCatName(e.target.value)}
               className="flex-1 p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-[#D60036]"
@@ -82,41 +95,75 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
             Categorias Cadastradas ({categories.length})
           </label>
 
-          <div className="max-h-60 overflow-y-auto space-y-2 pr-1 no-scrollbar">
+          <div className="space-y-2 pr-1">
             {categories.map((cat) => {
               const athleteCount = athletes.filter((a) => a.category === cat.id).length;
               const wodCount = wods.filter((w) => w.category === cat.id).length;
+              const isEditing = editingCatId === cat.id;
 
               return (
                 <div
                   key={cat.id}
                   className="p-3 bg-white/5 border border-white/10 rounded-xl flex items-center justify-between transition-colors hover:border-white/20"
                 >
-                  <div>
-                    <span className="font-heading font-bold text-sm text-white">{cat.name}</span>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono mt-0.5">
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3 text-slate-400" /> {athleteCount} atleta(s)
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Dumbbell className="w-3 h-3 text-slate-400" /> {wodCount} WOD(s)
-                      </span>
-                    </div>
+                  <div className="flex-1 mr-3">
+                    {isEditing ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={editingCatName}
+                          onChange={(e) => setEditingCatName(e.target.value)}
+                          className="p-2 bg-[#0B0D12] border border-[#D60036] rounded-lg text-white text-xs font-bold w-full"
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleSaveEdit(cat.id)}
+                          className="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="font-heading font-bold text-sm text-white">{cat.name}</span>
+                        <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono mt-0.5">
+                          <span className="flex items-center gap-1">
+                            <Users className="w-3 h-3 text-slate-400" /> {athleteCount} dupla(s)
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Dumbbell className="w-3 h-3 text-slate-400" /> {wodCount} WOD(s)
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(cat)}
-                    disabled={categories.length <= 1}
-                    className={`p-2 rounded-xl transition-all ${
-                      categories.length <= 1
-                        ? 'text-slate-600 cursor-not-allowed'
-                        : 'text-slate-400 hover:text-red-400 hover:bg-red-500/10'
-                    }`}
-                    title={categories.length <= 1 ? 'Mantenha ao menos 1 categoria' : 'Excluir Categoria'}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {!isEditing && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(cat)}
+                        className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+                        title="Editar Nome da Categoria"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(cat)}
+                        disabled={categories.length <= 1}
+                        className={`p-2 rounded-xl transition-all ${
+                          categories.length <= 1
+                            ? 'text-slate-600 cursor-not-allowed'
+                            : 'text-slate-400 hover:text-red-400 hover:bg-red-500/10'
+                        }`}
+                        title={categories.length <= 1 ? 'Mantenha ao menos 1 categoria' : 'Excluir Categoria'}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}

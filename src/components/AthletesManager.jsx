@@ -71,10 +71,10 @@ export const AthletesManager = () => {
           <div>
             <div className="flex items-center gap-2">
               <Users className="w-6 h-6 text-[#D60036]" />
-              <h1 className="font-heading text-2xl font-black text-white tracking-wide">CADASTRO DE ATLETAS</h1>
+              <h1 className="font-heading text-2xl font-black text-white tracking-wide">CADASTRO DE DUPLAS</h1>
             </div>
             <p className="text-slate-400 text-xs mt-0.5">
-              Gerencie a lista de competidores, número de peito (bib) e categorias.
+              Gerencie a lista de duplas competidoras, número de peito (bib) e categorias.
             </p>
           </div>
 
@@ -92,7 +92,7 @@ export const AthletesManager = () => {
               onClick={handleOpenAddModal}
               className="btn-wod btn-wod-primary text-xs"
             >
-              <UserPlus className="w-4 h-4" /> Novo Atleta
+              <UserPlus className="w-4 h-4" /> Nova Dupla
             </button>
           </div>
         </div>
@@ -133,7 +133,7 @@ export const AthletesManager = () => {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar atleta, bib ou box..."
+              placeholder="Buscar dupla, bib ou box..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#0B0D12] border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#D60036]"
@@ -147,7 +147,7 @@ export const AthletesManager = () => {
       <div className="block md:hidden space-y-2.5">
         {filteredAthletes.length === 0 ? (
           <div className="wod-card p-6 text-center text-slate-500 text-xs">
-            Nenhum atleta encontrado.
+            Nenhuma dupla encontrada.
           </div>
         ) : (
           filteredAthletes.map(athlete => {
@@ -173,7 +173,7 @@ export const AthletesManager = () => {
                   </button>
                   <button
                     onClick={() => {
-                      if (window.confirm(`Excluir o atleta "${athlete.name}"?`)) {
+                      if (window.confirm(`Excluir a dupla "${athlete.name}"?`)) {
                         deleteAthlete(athlete.id);
                       }
                     }}
@@ -195,7 +195,7 @@ export const AthletesManager = () => {
             <thead>
               <tr>
                 <th className="w-20 text-center">BIB</th>
-                <th>NOME DO ATLETA</th>
+                <th>NOME DA DUPLA</th>
                 <th>BOX / AFILIADA</th>
                 <th>CATEGORIA</th>
                 <th className="w-28 text-right pr-6">AÇÕES</th>
@@ -205,7 +205,7 @@ export const AthletesManager = () => {
               {filteredAthletes.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="text-center py-8 text-slate-500 text-xs">
-                    Nenhum atleta cadastrado nesta categoria.
+                    Nenhuma dupla cadastrada nesta categoria.
                   </td>
                 </tr>
               ) : (
@@ -238,7 +238,7 @@ export const AthletesManager = () => {
                           </button>
                           <button
                             onClick={() => {
-                              if (window.confirm(`Excluir o atleta "${athlete.name}"?`)) {
+                              if (window.confirm(`Excluir a dupla "${athlete.name}"?`)) {
                                 deleteAthlete(athlete.id);
                               }
                             }}
@@ -258,13 +258,13 @@ export const AthletesManager = () => {
         </div>
       </div>
 
-      {/* Athlete Modal */}
+      {/* Athlete / Dupla Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="wod-card p-6 max-w-md w-full space-y-4 border-[#D60036]/40">
-            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-4 flex min-h-full items-center justify-center animate-fade-in">
+          <div className="wod-card p-6 max-w-md w-full space-y-4 border-[#D60036]/40 my-auto max-h-[85vh] overflow-y-auto shadow-2xl">
+            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2 border-b border-white/10 pb-3">
               <UserPlus className="w-6 h-6 text-[#D60036]" />
-              {editingAthlete ? 'Editar Atleta' : 'Novo Atleta'}
+              {editingAthlete ? 'Editar Dupla' : 'Nova Dupla'}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -282,14 +282,15 @@ export const AthletesManager = () => {
                 </div>
 
                 <div className="space-y-1 col-span-2">
-                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Nome Completo</label>
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Nome da Dupla</label>
                   <input
                     type="text"
                     required
-                    placeholder="Nome do atleta"
+                    placeholder="Ex: João & Maria"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
+                    autoFocus
                   />
                 </div>
               </div>
@@ -330,7 +331,7 @@ export const AthletesManager = () => {
                   type="submit"
                   className="btn-wod btn-wod-primary text-xs"
                 >
-                  {editingAthlete ? 'Atualizar Atleta' : 'Salvar Atleta'}
+                  {editingAthlete ? 'Atualizar Dupla' : 'Salvar Dupla'}
                 </button>
               </div>
             </form>

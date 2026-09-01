@@ -143,14 +143,14 @@ export const ScoreEntry = () => {
 
             <div className="space-y-1.5">
               <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-red-500" /> 2. Selecionar Atleta
+                <Flame className="w-3.5 h-3.5 text-red-500" /> 2. Selecionar Dupla
               </label>
               <select
                 value={selectedAthleteId}
                 onChange={(e) => handleAthleteChange(e.target.value)}
                 className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-red-500"
               >
-                <option value="">-- Escolha um Atleta --</option>
+                <option value="">-- Escolha uma Dupla --</option>
                 {wodAthletes.map(a => (
                   <option key={a.id} value={a.id}>
                     #{a.bib} - {a.name} ({a.box})
