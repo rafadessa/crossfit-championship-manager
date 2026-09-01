@@ -179,72 +179,154 @@ export const TournamentProvider = ({ children }) => {
     setIsAdminLoggedIn(false);
   };
 
-  // CRUD Handlers
-  const addAthlete = (newAthlete) => {
+  // CRUD Handlers with Supabase Realtime DB Sync
+  const addAthlete = async (newAthlete) => {
     const athlete = {
       ...newAthlete,
       id: `ath-${Date.now()}`
     };
     setAthletes(prev => [...prev, athlete]);
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('athletes').upsert({
+        id: athlete.id,
+        bib: athlete.bib,
+        name: athlete.name,
+        box: athlete.box || '',
+        category: athlete.category
+      });
+    }
   };
 
-  const updateAthlete = (id, updatedData) => {
+  const updateAthlete = async (id, updatedData) => {
     setAthletes(prev => prev.map(a => a.id === id ? { ...a, ...updatedData } : a));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('athletes').update({
+        bib: updatedData.bib,
+        name: updatedData.name,
+        box: updatedData.box || '',
+        category: updatedData.category
+      }).eq('id', id);
+    }
   };
 
-  const deleteAthlete = (id) => {
+  const deleteAthlete = async (id) => {
     setAthletes(prev => prev.filter(a => a.id !== id));
     setScores(prev => prev.filter(s => s.athleteId !== id));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('athletes').delete().eq('id', id);
+      await supabase.from('scores').delete().eq('athlete_id', id);
+    }
   };
 
-  const addWod = (newWod) => {
+  const addWod = async (newWod) => {
     const wod = {
       ...newWod,
       id: `wod-${Date.now()}`
     };
     setWods(prev => [...prev, wod]);
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('wods').upsert({
+        id: wod.id,
+        name: wod.name,
+        type: wod.type,
+        time_cap: wod.timeCap || 600,
+        category: wod.category,
+        reps_per_round: wod.repsPerRound || 0,
+        description: wod.description || '',
+        standards: wod.standards || '',
+        tiebreak_rule: wod.tiebreakRule || ''
+      });
+    }
   };
 
-  const updateWod = (id, updatedData) => {
+  const updateWod = async (id, updatedData) => {
     setWods(prev => prev.map(w => w.id === id ? { ...w, ...updatedData } : w));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('wods').update({
+        name: updatedData.name,
+        type: updatedData.type,
+        time_cap: updatedData.timeCap,
+        category: updatedData.category,
+        reps_per_round: updatedData.repsPerRound,
+        description: updatedData.description,
+        standards: updatedData.standards,
+        tiebreak_rule: updatedData.tiebreakRule
+      }).eq('id', id);
+    }
   };
 
-  const deleteWod = (id) => {
+  const deleteWod = async (id) => {
     setWods(prev => prev.filter(w => w.id !== id));
     setScores(prev => prev.filter(s => s.wodId !== id));
     setHeats(prev => prev.filter(h => h.wodId !== id));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('wods').delete().eq('id', id);
+      await supabase.from('scores').delete().eq('wod_id', id);
+      await supabase.from('heats').delete().eq('wod_id', id);
+    }
   };
 
-  const saveScore = (scoreData) => {
+  const saveScore = async (scoreData) => {
+    let targetId = scoreData.id;
     setScores(prev => {
       const existingIdx = prev.findIndex(
         s => s.wodId === scoreData.wodId && s.athleteId === scoreData.athleteId
       );
       if (existingIdx >= 0) {
+        targetId = prev[existingIdx].id || `sc-${Date.now()}`;
         const updated = [...prev];
-        updated[existingIdx] = { ...updated[existingIdx], ...scoreData, id: updated[existingIdx].id || `sc-${Date.now()}` };
+        updated[existingIdx] = { ...updated[existingIdx], ...scoreData, id: targetId };
         return updated;
       } else {
-        return [...prev, { ...scoreData, id: `sc-${Date.now()}` }];
+        targetId = scoreData.id || `sc-${Date.now()}`;
+        return [...prev, { ...scoreData, id: targetId }];
       }
     });
+
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('scores').upsert({
+        id: targetId,
+        wod_id: scoreData.wodId,
+        athlete_id: scoreData.athleteId,
+        is_cap: scoreData.isCap || false,
+        time_in_seconds: scoreData.timeInSeconds || 0,
+        time_str: scoreData.timeStr || '',
+        reps: scoreData.reps || 0,
+        rounds: scoreData.rounds || 0,
+        weight: scoreData.weight || 0,
+        tiebreak_time: scoreData.tiebreakTime || null
+      });
+    }
   };
 
-  const addHeat = (newHeat) => {
+  const addHeat = async (newHeat) => {
     const heat = {
       ...newHeat,
       id: `heat-${Date.now()}`,
       status: 'upcoming'
     };
     setHeats(prev => [...prev, heat]);
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('heats').upsert({
+        id: heat.id,
+        wod_id: heat.wodId,
+        name: heat.name,
+        start_time: heat.startTime || '',
+        status: heat.status,
+        lanes: heat.lanes || []
+      });
+    }
   };
 
-  const updateHeatStatus = (heatId, status) => {
+  const updateHeatStatus = async (heatId, status) => {
     setHeats(prev => prev.map(h => h.id === heatId ? { ...h, status } : h));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('heats').update({ status }).eq('id', heatId);
+    }
   };
 
   // Category CRUD Handlers
-  const addCategory = (name) => {
+  const addCategory = async (name) => {
     const cleanName = name.trim();
     if (!cleanName) return;
     const newCat = {
@@ -255,15 +337,24 @@ export const TournamentProvider = ({ children }) => {
     if (!selectedCategory) {
       setSelectedCategory(newCat.id);
     }
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('categories').upsert({
+        id: newCat.id,
+        name: newCat.name
+      });
+    }
   };
 
-  const updateCategory = (id, newName) => {
+  const updateCategory = async (id, newName) => {
     const cleanName = newName.trim();
     if (!cleanName) return;
     setCategories(prev => prev.map(c => c.id === id ? { ...c, name: cleanName } : c));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('categories').update({ name: cleanName }).eq('id', id);
+    }
   };
 
-  const deleteCategory = (id) => {
+  const deleteCategory = async (id) => {
     if (categories.length <= 1) {
       alert('É necessário ter ao menos 1 categoria cadastrada no campeonato.');
       return;
@@ -275,6 +366,9 @@ export const TournamentProvider = ({ children }) => {
       }
       return remaining;
     });
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('categories').delete().eq('id', id);
+    }
   };
 
   // Export / Import Tournament JSON
