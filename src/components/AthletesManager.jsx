@@ -258,60 +258,73 @@ export const AthletesManager = () => {
         </div>
       </div>
 
-      {/* Athlete / Dupla Modal */}
+      {/* Athlete / Dupla Modal Drawer */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-4 flex min-h-full items-center justify-center animate-fade-in">
-          <div className="wod-card p-6 max-w-md w-full space-y-4 border-[#D60036]/40 my-auto max-h-[85vh] overflow-y-auto shadow-2xl">
-            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2 border-b border-white/10 pb-3">
-              <UserPlus className="w-6 h-6 text-[#D60036]" />
-              {editingAthlete ? 'Editar Dupla' : 'Nova Dupla'}
-            </h2>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-4 flex flex-col justify-end md:justify-center md:items-center animate-fade-in">
+          <div className="wod-card p-5 md:p-6 max-w-md w-full space-y-4 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-t-3xl md:rounded-2xl max-h-[90vh] overflow-y-auto">
+            
+            {/* Mobile Drag Indicator Bar */}
+            <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto md:hidden -mt-1 mb-2"></div>
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <h2 className="font-heading text-xl font-black text-white flex items-center gap-2">
+                <UserPlus className="w-6 h-6 text-[#D60036]" />
+                {editingAthlete ? 'Editar Dupla' : 'Nova Dupla'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1 col-span-1">
-                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">BIB (#)</label>
+                  <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">BIB (#)</label>
                   <input
                     type="text"
                     required
                     placeholder="101"
                     value={formData.bib}
                     onChange={e => setFormData({ ...formData, bib: e.target.value })}
-                    className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-mono font-bold focus:border-[#D60036]"
+                    className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-sm font-mono font-bold text-center focus:border-[#D60036] focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1 col-span-2">
-                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Nome da Dupla</label>
+                  <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Nome da Dupla</label>
                   <input
                     type="text"
                     required
                     placeholder="Ex: João & Maria"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
+                    className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
                     autoFocus
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Box / CT</label>
+                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Box / CT Afiliado</label>
                 <input
                   type="text"
                   placeholder="Ex: CrossFit IronBox"
                   value={formData.box}
                   onChange={e => setFormData({ ...formData, box: e.target.value })}
-                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs focus:border-[#D60036]"
+                  className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs focus:border-[#D60036] focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Categoria</label>
+                <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Categoria</label>
                 <select
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white text-xs font-bold focus:border-[#D60036]"
+                  className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
                 >
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -319,17 +332,17 @@ export const AthletesManager = () => {
                 </select>
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="btn-wod btn-wod-secondary text-xs"
+                  className="h-12 px-5 rounded-xl bg-white/5 border border-white/15 text-slate-300 hover:text-white text-xs font-heading font-bold"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="btn-wod btn-wod-primary text-xs"
+                  className="h-12 px-6 rounded-xl bg-[#D60036] text-white text-xs font-heading font-black hover:brightness-110 shadow-lg shadow-[#D60036]/30"
                 >
                   {editingAthlete ? 'Atualizar Dupla' : 'Salvar Dupla'}
                 </button>

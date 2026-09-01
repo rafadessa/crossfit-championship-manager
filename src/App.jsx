@@ -7,7 +7,6 @@ import { WodManager } from './components/WodManager';
 import { AthletesManager } from './components/AthletesManager';
 import { ScoreEntry } from './components/ScoreEntry';
 import { HeatManager } from './components/HeatManager';
-import { ArenaTimer } from './components/ArenaTimer';
 import { ArenaTvMode } from './components/ArenaTvMode';
 import { AdminLogin } from './components/AdminLogin';
 
@@ -21,7 +20,7 @@ const MainContent = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#0B0D12]">
       <Navbar />
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 main-content-padding">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 pb-28 md:pb-8">
         {activeTab === 'login' && <AdminLogin />}
         {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'leaderboard' && <Leaderboard />}
@@ -31,16 +30,12 @@ const MainContent = () => {
         {activeTab === 'athletes' && (isAdminLoggedIn ? <AthletesManager /> : <AdminLogin />)}
         {activeTab === 'judge' && (isAdminLoggedIn ? <ScoreEntry /> : <AdminLogin />)}
         {activeTab === 'heats' && (isAdminLoggedIn ? <HeatManager /> : <AdminLogin />)}
-
-        {/* Public Views */}
-        {activeTab === 'timer' && <ArenaTimer />}
       </main>
       
-      <footer className="border-t border-white/10 py-6 mb-16 md:mb-0 text-center text-xs text-slate-500 font-mono">
+      <footer className="border-t border-white/10 py-6 mb-20 md:mb-0 text-center text-xs text-slate-500 font-mono">
         CrossGames GTI &copy; {new Date().getFullYear()} • Arena Championship Manager
       </footer>
     </div>
-
   );
 };
 

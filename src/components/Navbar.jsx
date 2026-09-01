@@ -39,16 +39,14 @@ export const Navbar = () => {
     { id: 'wods', label: 'WODs', icon: Dumbbell, public: false },
     { id: 'athletes', label: 'Duplas', icon: Users, public: false },
     { id: 'judge', label: 'Área do Juiz', icon: ClipboardCheck, public: false },
-    { id: 'heats', label: 'Baterias', icon: Layers, public: false },
-    { id: 'timer', label: 'Timer Arena', icon: Timer, public: true },
+    { id: 'heats', label: 'Baterias', icon: Layers, public: false }
   ];
 
   const bottomNavItems = [
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
     { id: 'leaderboard', label: 'Líderes', icon: Trophy, badge: 'LIVE', public: true },
-    { id: 'heats', label: 'Baterias', icon: Layers, public: false },
-    { id: 'judge', label: 'Juiz', icon: ClipboardCheck, public: false },
-    { id: 'timer', label: 'Timer', icon: Timer, public: true },
+    { id: 'athletes', label: 'Duplas', icon: Users, public: false },
+    { id: 'heats', label: 'Baterias', icon: Layers, public: false }
   ];
 
   const handleTabClick = (item) => {

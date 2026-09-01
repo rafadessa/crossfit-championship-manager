@@ -83,7 +83,7 @@ export const Dashboard = () => {
             </h1>
             
             <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl">
-              Gestão oficial de leaderboard em tempo real, baterias de duplas, área do juiz responsiva para celular e cronômetro com aviso sonoro para arena.
+              Gestão oficial de leaderboard em tempo real, baterias de duplas e área do juiz responsiva para celular.
             </p>
 
             {/* Action Buttons */}
