@@ -53,6 +53,71 @@ export const TournamentProvider = ({ children }) => {
   const [isInstallable, setIsInstallable] = useState(false);
   const [showIosInstallModal, setShowIosInstallModal] = useState(false);
 
+  // Supabase Initial Fetch & Realtime Synchronization
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+
+    const fetchAllFromSupabase = async () => {
+      try {
+        const [catRes, wodRes, athRes, scRes, heatRes] = await Promise.all([
+          supabase.from('categories').select('*').order('created_at', { ascending: true }),
+          supabase.from('wods').select('*').order('created_at', { ascending: true }),
+          supabase.from('athletes').select('*').order('created_at', { ascending: true }),
+          supabase.from('scores').select('*'),
+          supabase.from('heats').select('*').order('created_at', { ascending: true })
+        ]);
+
+        if (catRes.data && catRes.data.length > 0) {
+          setCategories(catRes.data);
+        }
+        if (wodRes.data) {
+          setWods(wodRes.data.map(w => ({
+            ...w,
+            timeCap: w.time_cap,
+            repsPerRound: w.reps_per_round,
+            tiebreakRule: w.tiebreak_rule
+          })));
+        }
+        if (athRes.data) {
+          setAthletes(athRes.data);
+        }
+        if (scRes.data) {
+          setScores(scRes.data.map(s => ({
+            ...s,
+            wodId: s.wod_id,
+            athleteId: s.athlete_id,
+            isCap: s.is_cap,
+            timeInSeconds: s.time_in_seconds,
+            timeStr: s.time_str,
+            tiebreakTime: s.tiebreak_time
+          })));
+        }
+        if (heatRes.data) {
+          setHeats(heatRes.data.map(h => ({
+            ...h,
+            wodId: h.wod_id,
+            startTime: h.start_time
+          })));
+        }
+      } catch (err) {
+        console.warn('Error fetching Supabase data:', err);
+      }
+    };
+
+    fetchAllFromSupabase();
+
+    // Subscribe to Postgres Realtime Changes across all tables
+    const channel = supabase.channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        fetchAllFromSupabase();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();

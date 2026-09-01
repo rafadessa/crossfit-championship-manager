@@ -43,9 +43,9 @@ export const CategoryManagerModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 p-4 bg-black/85 backdrop-blur-md flex items-center justify-center animate-fade-in">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/85 backdrop-blur-md p-4 flex min-h-full items-center justify-center animate-fade-in">
       
-      <div className="wod-card p-6 max-w-lg w-full space-y-5 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-2xl max-h-[85vh] flex flex-col">
+      <div className="wod-card p-6 max-w-lg w-full space-y-5 border-2 border-[#D60036]/50 bg-[#0E1118] shadow-2xl relative rounded-2xl my-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 pb-4 shrink-0">
