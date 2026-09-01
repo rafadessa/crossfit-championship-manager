@@ -7,15 +7,10 @@ import { WodManager } from './components/WodManager';
 import { AthletesManager } from './components/AthletesManager';
 import { ScoreEntry } from './components/ScoreEntry';
 import { HeatManager } from './components/HeatManager';
-import { ArenaTvMode } from './components/ArenaTvMode';
 import { AdminLogin } from './components/AdminLogin';
 
 const MainContent = () => {
   const { activeTab, isAdminLoggedIn } = useTournament();
-
-  if (activeTab === 'tv') {
-    return <ArenaTvMode />;
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0B0D12]">

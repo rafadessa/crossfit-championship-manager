@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitscore-wodengage-v1';
+const CACHE_NAME = 'crossgames-gti-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
