@@ -253,8 +253,107 @@ export const ScoreEntry = () => {
                 3. Lançamento da Nota
               </h3>
 
-              {/* FOR TIME WOD */}
-              {activeWod?.type === 'for_time' && (
+              {/* DISTANCE / HEIGHT / WEIGHT */}
+              {['distance', 'height', 'weight', 'max_weight'].includes(activeWod?.type) && (
+                <div className="space-y-1.5 max-w-xs">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">
+                    {activeWod.type === 'distance' ? 'Distância (m/km)' : activeWod.type === 'height' ? 'Altura (cm/m)' : 'Carga / Peso (Kg)'}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Ex: 135.5"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-2xl font-black text-[#D4FF00]"
+                  />
+                </div>
+              )}
+
+              {/* REPS / CALORIES / ROUNDS */}
+              {['reps', 'calories', 'rounds'].includes(activeWod?.type) && (
+                <div className="space-y-1.5 max-w-xs">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">
+                    {activeWod.type === 'reps' ? 'Total de Repetições' : activeWod.type === 'calories' ? 'Total de Calorias' : 'Total de Rounds'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      placeholder="Ex: 145"
+                      value={reps}
+                      onChange={(e) => setReps(e.target.value)}
+                      className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-2xl font-black text-[#D60036]"
+                    />
+                    <button type="button" onClick={() => adjustReps(-1)} className="p-3.5 rounded-xl bg-white/10 text-white font-bold hover:bg-white/20">
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <button type="button" onClick={() => adjustReps(1)} className="p-3.5 rounded-xl bg-[#D60036] text-white font-bold hover:brightness-110">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ROUNDS + REPS (AMRAP) */}
+              {['rounds_reps', 'amrap', 'emom'].includes(activeWod?.type) && (
+                <div className="space-y-4 max-w-xs">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Rounds Completos</label>
+                    <input
+                      type="number"
+                      placeholder="Ex: 3"
+                      value={rounds}
+                      onChange={(e) => setRounds(e.target.value)}
+                      className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-xl font-bold text-white"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Reps Extras</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        placeholder="Ex: 12"
+                        value={reps}
+                        onChange={(e) => setReps(e.target.value)}
+                        className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-xl font-black text-[#D60036]"
+                      />
+                      <button type="button" onClick={() => adjustReps(1)} className="p-3 rounded-xl bg-[#D60036] text-white font-bold hover:brightness-110">
+                        +1
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* JUST TIME */}
+              {activeWod?.type === 'time' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Tempo de Conclusão</label>
+                  <div className="flex items-center gap-2 max-w-xs">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      min="0"
+                      value={mins}
+                      onChange={(e) => setMins(e.target.value)}
+                      className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#D60036]"
+                    />
+                    <span className="font-black text-slate-400">:</span>
+                    <input
+                      type="number"
+                      placeholder="Seg"
+                      min="0"
+                      max="59"
+                      value={secs}
+                      onChange={(e) => setSecs(e.target.value)}
+                      className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-lg font-black text-white focus:border-[#D60036]"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* TIME + REPS (For Time c/ Cap) */}
+              {['time_reps', 'for_time'].includes(activeWod?.type) && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -309,56 +408,6 @@ export const ScoreEntry = () => {
                       </div>
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* AMRAP WOD */}
-              {activeWod?.type === 'amrap' && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Total de Repetições (Reps)</label>
-                    <div className="flex items-center gap-2 max-w-xs">
-                      <input
-                        type="number"
-                        placeholder="Ex: 145"
-                        value={reps}
-                        onChange={(e) => setReps(e.target.value)}
-                        className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-center font-mono text-2xl font-black text-[#D60036]"
-                      />
-                      <button type="button" onClick={() => adjustReps(-1)} className="p-3.5 rounded-xl bg-white/10 text-white font-bold hover:bg-white/20">
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <button type="button" onClick={() => adjustReps(1)} className="p-3.5 rounded-xl bg-[#D60036] text-white font-bold hover:brightness-110">
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5 max-w-xs">
-                    <label className="text-xs font-heading font-extrabold text-slate-400 uppercase">Rounds (Opcional)</label>
-                    <input
-                      type="number"
-                      placeholder="Ex: 3"
-                      value={rounds}
-                      onChange={(e) => setRounds(e.target.value)}
-                      className="w-full p-2.5 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-base font-bold text-white"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* MAX WEIGHT WOD */}
-              {activeWod?.type === 'max_weight' && (
-                <div className="space-y-1.5 max-w-xs">
-                  <label className="text-xs font-heading font-extrabold text-slate-300 uppercase">Carga Máxima (Kg)</label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    placeholder="Ex: 135.5"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    className="w-full p-3 bg-[#0A0E17] border border-white/15 rounded-xl text-center font-mono text-2xl font-black text-[#D4FF00]"
-                  />
                 </div>
               )}
 

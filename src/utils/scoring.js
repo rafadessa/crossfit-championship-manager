@@ -51,7 +51,7 @@ export const calculateWodRankings = (wod, athletes, scores) => {
       let capStatus = null; // 'CAP' or 'COMPLETED'
 
       if (scoreObj) {
-        if (wod.type === 'for_time') {
+        if (['time_reps', 'for_time'].includes(wod.type)) {
           if (scoreObj.isCap) {
             // CAP: reps completed before cap
             rawScore = scoreObj.reps || 0;
@@ -64,24 +64,45 @@ export const calculateWodRankings = (wod, athletes, scores) => {
             scoreDisplay = formatTime(sec);
             capStatus = 'FINISH';
           }
-          if (scoreObj.tiebreakTime) {
-            tiebreakDisplay = formatTime(scoreObj.tiebreakTime);
-          }
-        } else if (wod.type === 'amrap') {
-          const reps = scoreObj.reps || 0;
-          const rounds = scoreObj.rounds || 0;
-          rawScore = reps;
-          scoreDisplay = rounds > 0 ? `${rounds} rounds + ${reps % wod.repsPerRound || 0} reps (${reps} total)` : `${reps} reps`;
-          if (scoreObj.tiebreakTime) {
-            tiebreakDisplay = formatTime(scoreObj.tiebreakTime);
-          }
-        } else if (wod.type === 'max_weight') {
+        } else if (wod.type === 'time') {
+          const sec = scoreObj.timeInSeconds || parseTimeToSeconds(scoreObj.timeStr);
+          rawScore = sec;
+          scoreDisplay = formatTime(sec);
+        } else if (['distance'].includes(wod.type)) {
+          const weight = scoreObj.weight || 0;
+          rawScore = weight;
+          scoreDisplay = `${weight} m`;
+        } else if (['height'].includes(wod.type)) {
+          const weight = scoreObj.weight || 0;
+          rawScore = weight;
+          scoreDisplay = `${weight} cm`;
+        } else if (['weight', 'max_weight'].includes(wod.type)) {
           const weight = scoreObj.weight || 0;
           rawScore = weight;
           scoreDisplay = `${weight} kg`;
-          if (scoreObj.tiebreakTime) {
-            tiebreakDisplay = formatTime(scoreObj.tiebreakTime);
+        } else if (['reps', 'calories'].includes(wod.type)) {
+          const reps = scoreObj.reps || 0;
+          rawScore = reps;
+          scoreDisplay = `${reps} ${wod.type === 'calories' ? 'cal' : 'reps'}`;
+        } else if (['rounds'].includes(wod.type)) {
+          const rounds = scoreObj.rounds || 0;
+          rawScore = rounds;
+          scoreDisplay = `${rounds} rounds`;
+        } else if (['rounds_reps', 'amrap', 'emom'].includes(wod.type)) {
+          const reps = scoreObj.reps || 0;
+          const rounds = scoreObj.rounds || 0;
+          
+          if (wod.type === 'rounds_reps') {
+            rawScore = (rounds * 100000) + reps; // composite score for rounds + reps
+            scoreDisplay = reps > 0 ? `${rounds} rounds + ${reps} reps` : `${rounds} rounds`;
+          } else {
+            rawScore = reps; // old AMRAP logic where reps is total reps
+            scoreDisplay = rounds > 0 ? `${rounds} rounds + ${reps % (wod.repsPerRound || 100000)} reps (${reps} total)` : `${reps} reps`;
           }
+        }
+
+        if (scoreObj.tiebreakTime) {
+          tiebreakDisplay = formatTime(scoreObj.tiebreakTime);
         }
       }
 
@@ -103,7 +124,7 @@ export const calculateWodRankings = (wod, athletes, scores) => {
     if (!a.hasScore) return 1;
     if (!b.hasScore) return -1;
 
-    if (wod.type === 'for_time') {
+    if (['time_reps', 'for_time'].includes(wod.type)) {
       // If both completed in time, lowest time wins
       if (a.capStatus === 'FINISH' && b.capStatus === 'FINISH') {
         if (a.rawScore !== b.rawScore) return a.rawScore - b.rawScore;
@@ -117,8 +138,12 @@ export const calculateWodRankings = (wod, athletes, scores) => {
       // Both CAP: higher reps wins
       if (a.rawScore !== b.rawScore) return b.rawScore - a.rawScore;
       return (a.scoreObj?.tiebreakTime || 99999) - (b.scoreObj?.tiebreakTime || 99999);
+    } else if (wod.type === 'time') {
+      // Time-only WOD: lower time wins
+      if (a.rawScore !== b.rawScore) return a.rawScore - b.rawScore;
+      return (a.scoreObj?.tiebreakTime || 99999) - (b.scoreObj?.tiebreakTime || 99999);
     } else {
-      // AMRAP or Max Weight: higher raw score wins
+      // Distance, Height, Weight, Reps, Calories, Rounds: higher raw score wins
       if (a.rawScore !== b.rawScore) return b.rawScore - a.rawScore;
       // Tiebreak time: lower time wins tiebreak
       return (a.scoreObj?.tiebreakTime || 99999) - (b.scoreObj?.tiebreakTime || 99999);

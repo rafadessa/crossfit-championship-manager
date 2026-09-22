@@ -13,7 +13,7 @@ export const WodManager = () => {
   const [wodToDelete, setWodToDelete] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    type: 'for_time',
+    type: 'time_reps',
     timeCapMins: '10',
     category: categories[0]?.id || 'rx_male',
     repsPerRound: '',
@@ -39,7 +39,7 @@ export const WodManager = () => {
 
     setFormData({
       name: '',
-      type: 'for_time',
+      type: 'time_reps',
       timeCapMins: '10',
       category: categories[0]?.id || 'rx_male',
       repsPerRound: '',
@@ -94,9 +94,16 @@ export const WodManager = () => {
                 
                 <div className="flex items-center justify-between">
                   <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/40 text-[9px]">
-                    {wod.type === 'for_time' ? '⏱️ For Time' :
-                     wod.type === 'amrap' ? '🔄 AMRAP' :
-                     wod.type === 'max_weight' ? '🏋️ Max Weight' : '⏰ EMOM'}
+                    {wod.type === 'distance' ? '📏 Distância' :
+                     wod.type === 'height' ? '⬆️ Altura' :
+                     wod.type === 'reps' ? '🔄 Repetição' :
+                     wod.type === 'time' ? '⏱️ Tempo' :
+                     wod.type === 'weight' ? '🏋️ Carga' :
+                     wod.type === 'calories' ? '🔥 Calorias' :
+                     wod.type === 'rounds' ? '🔄 Round' :
+                     wod.type === 'rounds_reps' ? '🔄 Round + Rep' :
+                     wod.type === 'time_reps' ? '⏱️ Tempo + Rep' :
+                     '🏋️ ' + wod.type}
                   </span>
 
                   <span className="wod-chip bg-slate-800 text-slate-400 border border-slate-700 text-[9px]">
@@ -184,30 +191,22 @@ export const WodManager = () => {
               <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">
                 2. Formato da Prova (Tipo)
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {[
-                  { id: 'for_time', label: 'For Time', desc: 'Menor Tempo', icon: '⏱️' },
-                  { id: 'amrap', label: 'AMRAP', desc: 'Mais Reps', icon: '🔄' },
-                  { id: 'max_weight', label: 'Max Weight', desc: 'Carga Máxima', icon: '🏋️' },
-                  { id: 'emom', label: 'EMOM', desc: 'Por Minuto', icon: '⏰' }
-                ].map(t => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, type: t.id })}
-                    className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all h-20 ${
-                      formData.type === t.id
-                        ? 'bg-[#D60036]/20 border-[#D60036] text-white shadow-lg'
-                        : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
-                    }`}
-                  >
-                    <span className="text-base">{t.icon}</span>
-                    <div>
-                      <p className="font-heading text-xs font-black leading-none">{t.label}</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">{t.desc}</p>
-                    </div>
-                  </button>
-                ))}
+              <div className="pt-1">
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
+                >
+                  <option value="distance">📏 Distância (m/km)</option>
+                  <option value="height">⬆️ Altura (cm/m)</option>
+                  <option value="reps">🔄 Repetição (Reps)</option>
+                  <option value="time">⏱️ Tempo (hh:mm:ss)</option>
+                  <option value="weight">🏋️ Carga (kg)</option>
+                  <option value="calories">🔥 Calorias (cal)</option>
+                  <option value="rounds">🔄 Round</option>
+                  <option value="rounds_reps">🔄 Round + Repetição</option>
+                  <option value="time_reps">⏱️ Tempo + Repetição (For Time c/ Cap)</option>
+                </select>
               </div>
             </div>
 
