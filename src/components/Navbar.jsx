@@ -18,8 +18,7 @@ export const Navbar = () => {
   const { 
     activeTab, 
     setActiveTab, 
-    isAdminLoggedIn, 
-    logoutAdmin,
+    isAdminLoggedIn,
     clearAllData,
     loadSampleData,
     triggerPwaInstall,
@@ -29,18 +28,23 @@ export const Navbar = () => {
     isInstallable
   } = useTournament();
 
+  // Only show admin tabs when logged in as admin
   const navItems = [
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
     { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, badge: 'LIVE', public: true },
-    { id: 'wods', label: 'WODs', icon: Dumbbell, public: false },
-    { id: 'athletes', label: 'Duplas', icon: Users, public: false }
+    ...(isAdminLoggedIn ? [
+      { id: 'wods', label: 'WODs', icon: Dumbbell, public: false },
+      { id: 'athletes', label: 'Duplas', icon: Users, public: false }
+    ] : [])
   ];
 
   // Bottom nav for mobile
   const bottomNavItems = [
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
     { id: 'leaderboard', label: 'Líderes', icon: Trophy, badge: 'LIVE', public: true },
-    { id: 'athletes', label: 'Duplas', icon: Users, public: false }
+    ...(isAdminLoggedIn ? [
+      { id: 'athletes', label: 'Duplas', icon: Users, public: false }
+    ] : [])
   ];
 
   const handleTabClick = (item) => {
@@ -132,23 +136,7 @@ export const Navbar = () => {
               <span>{isSupabaseConfigured ? 'Supabase Live' : 'Modo Local'}</span>
             </div>
 
-            {/* Admin indicator - only shows logout when logged in */}
-            {isAdminLoggedIn && (
-              <div className="flex items-center gap-1 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[11px] font-heading font-black text-emerald-400 hidden sm:inline ml-1">ADMIN</span>
-                <button
-                  onClick={logoutAdmin}
-                  className="text-[10px] font-mono text-slate-400 hover:text-white underline ml-1"
-                  title="Sair do Modo Admin"
-                >
-                  Sair
-                </button>
-              </div>
-            )}
+
 
             {/* Admin Data Actions - desktop only */}
             {isAdminLoggedIn && (

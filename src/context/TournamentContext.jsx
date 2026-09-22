@@ -48,13 +48,14 @@ export const TournamentProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState('rx_male');
   const [activeHeatForTimer, setActiveHeatForTimer] = useState(null);
 
-  // Secret URL-based admin access: navigate to /#admin to log in silently
+  // Secret URL-based admin access: navigate to /?key=g05admin to log in silently
   useEffect(() => {
-    if (window.location.hash === '#admin') {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('key') === 'g05admin') {
       setIsAdminLoggedIn(true);
       localStorage.setItem('fitscore_admin_auth', 'true');
-      // Remove the hash from the URL so it's not visible
-      history.replaceState(null, '', window.location.pathname + window.location.search);
+      // Remove the key from the URL so it's not visible
+      history.replaceState(null, '', window.location.pathname);
     }
   }, []);
 
