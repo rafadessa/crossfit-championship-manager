@@ -12,7 +12,6 @@ import {
   Flame,
   PlusCircle,
   Sparkles,
-  Lock,
   Crown,
   Download
 } from 'lucide-react';
@@ -95,7 +94,7 @@ export const Dashboard = () => {
                 <Trophy className="w-4 h-4" /> Ver Leaderboard Ao Vivo
               </button>
               
-              {isAdminLoggedIn ? (
+              {isAdminLoggedIn && (
                 <>
                   <button 
                     onClick={() => setActiveTab('judge')}
@@ -157,7 +156,7 @@ export const Dashboard = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 pt-2">
-            {isAdminLoggedIn ? (
+            {isAdminLoggedIn && (
               <>
                 <button 
                   onClick={() => setActiveTab('wods')}
@@ -172,13 +171,6 @@ export const Dashboard = () => {
                   <Users className="w-4 h-4 text-black" /> Criar Dupla
                 </button>
               </>
-            ) : (
-              <button 
-                onClick={() => setActiveTab('login')}
-                className="btn-wod btn-wod-primary text-xs py-2 px-4"
-              >
-                <Lock className="w-4 h-4" /> Entrar como Admin
-              </button>
             )}
 
             <button 
