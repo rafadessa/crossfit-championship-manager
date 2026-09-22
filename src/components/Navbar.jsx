@@ -45,10 +45,10 @@ export const Navbar = () => {
 
   const handleTabClick = (item) => {
     if (!item.public && !isAdminLoggedIn) {
-      setActiveTab('login');
-    } else {
-      setActiveTab(item.id);
+      // Admin access is only via secret URL - do nothing for non-admins
+      return;
     }
+    setActiveTab(item.id);
   };
 
   return (

@@ -6,7 +6,6 @@ import { Leaderboard } from './components/Leaderboard';
 import { WodManager } from './components/WodManager';
 import { AthletesManager } from './components/AthletesManager';
 
-import { AdminLogin } from './components/AdminLogin';
 
 const MainContent = () => {
   const { activeTab, isAdminLoggedIn } = useTournament();
