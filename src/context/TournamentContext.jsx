@@ -11,10 +11,12 @@ import { supabase, isSupabaseConfigured } from '../utils/supabaseClient';
 const TournamentContext = createContext();
 
 export const TournamentProvider = ({ children }) => {
-  // Admin Authentication State
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return localStorage.getItem('fitscore_admin_auth') === 'true';
-  });
+  // Admin auth is SESSION-ONLY (not persisted) — access via secret URL only
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  // Clear any previously stored admin auth so old sessions don't leak
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('fitscore_admin_auth');
+  }
 
   // Categories start with standard CrossFit categories
   const [categories, setCategories] = useState(() => {
@@ -53,7 +55,6 @@ export const TournamentProvider = ({ children }) => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('key') === 'g05admin') {
       setIsAdminLoggedIn(true);
-      localStorage.setItem('fitscore_admin_auth', 'true');
       // Remove the key from the URL so it's not visible
       history.replaceState(null, '', window.location.pathname);
     }
@@ -212,10 +213,7 @@ export const TournamentProvider = ({ children }) => {
     }
   };
 
-  // Sync state to LocalStorage & broadcast
-  useEffect(() => {
-    localStorage.setItem('fitscore_admin_auth', isAdminLoggedIn ? 'true' : 'false');
-  }, [isAdminLoggedIn]);
+  // (Admin state is session-only, intentionally not synced to localStorage)
 
   useEffect(() => {
     localStorage.setItem('fitscore_categories', JSON.stringify(categories));
