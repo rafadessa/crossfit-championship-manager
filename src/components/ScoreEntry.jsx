@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { ClipboardCheck, CheckCircle2, Dumbbell, Clock, Plus, Minus, Flame } from 'lucide-react';
+import { ClipboardCheck, CheckCircle2, Dumbbell, Clock, Plus, Minus, Flame, Play, Square, RotateCcw, Timer } from 'lucide-react';
 import { formatTime } from '../utils/scoring';
 
 export const ScoreEntry = () => {
@@ -20,6 +20,20 @@ export const ScoreEntry = () => {
   const [tiebreakSecs, setTiebreakSecs] = useState('');
 
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Stopwatch Timer State
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  useEffect(() => {
+    let interval;
+    if (timerRunning) {
+      interval = setInterval(() => {
+        setTimerSeconds(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timerRunning]);
 
   const activeWod = wods.find(w => w.id === selectedWodId) || wods[0];
   const wodAthletes = athletes.filter(a => a.category === activeWod?.category || activeWod?.category === 'ALL');
@@ -103,6 +117,67 @@ export const ScoreEntry = () => {
               Interface tátil para lançamento de notas e resultados no celular
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Built-in Stopwatch Timer */}
+      <div className="wod-card p-5 border-emerald-500/30">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-2 text-slate-300 uppercase font-heading font-black text-xs tracking-widest">
+            <Timer className="w-4 h-4 text-emerald-400" />
+            Cronômetro Auxiliar
+          </div>
+          
+          <div className="text-5xl md:text-6xl font-mono font-black text-white tracking-wider tabular-nums">
+            {formatTime(timerSeconds)}
+          </div>
+
+          <div className="flex items-center gap-3 w-full max-w-sm">
+            <button
+              type="button"
+              onClick={() => setTimerRunning(!timerRunning)}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-heading font-black text-sm transition-all ${
+                timerRunning 
+                  ? 'bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500/30' 
+                  : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30'
+              }`}
+            >
+              {timerRunning ? <><Square className="w-4 h-4" fill="currentColor" /> PARAR</> : <><Play className="w-4 h-4" fill="currentColor" /> INICIAR</>}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setTimerRunning(false); setTimerSeconds(0); }}
+              className="p-3 rounded-xl bg-white/10 text-slate-400 hover:text-white border border-white/10 transition-colors"
+              title="Zerar Cronômetro"
+            >
+              <RotateCcw className="w-5 h-5" />
+            </button>
+          </div>
+          
+          {timerSeconds > 0 && !timerRunning && (
+            <div className="flex gap-2 w-full max-w-sm mt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setMins(Math.floor(timerSeconds / 60).toString());
+                  setSecs(Math.floor(timerSeconds % 60).toString());
+                }}
+                className="flex-1 text-[10px] py-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-300 font-bold border border-white/10"
+              >
+                USAR COMO TEMPO WOD
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTiebreakMins(Math.floor(timerSeconds / 60).toString());
+                  setTiebreakSecs(Math.floor(timerSeconds % 60).toString());
+                }}
+                className="flex-1 text-[10px] py-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-300 font-bold border border-white/10"
+              >
+                USAR COMO TIE-BREAK
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

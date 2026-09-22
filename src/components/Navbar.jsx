@@ -10,7 +10,7 @@ import {
   X,
   Share,
   Download,
-  Database,
+  ClipboardCheck,
   Smartphone
 } from 'lucide-react';
 
@@ -34,7 +34,8 @@ export const Navbar = () => {
     { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, badge: 'LIVE', public: true },
     ...(isAdminLoggedIn ? [
       { id: 'wods', label: 'WODs', icon: Dumbbell, public: false },
-      { id: 'athletes', label: 'Duplas', icon: Users, public: false }
+      { id: 'athletes', label: 'Duplas', icon: Users, public: false },
+      { id: 'judge', label: 'Notas', icon: ClipboardCheck, public: false }
     ] : [])
   ];
 
@@ -123,18 +124,7 @@ export const Navbar = () => {
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
 
-            {/* Supabase DB Status Badge - desktop only */}
-            <div 
-              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-heading font-black tracking-wide ${
-                isSupabaseConfigured
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/5 border-white/10 text-slate-400'
-              }`}
-              title={isSupabaseConfigured ? 'Banco de dados Supabase Conectado' : 'Operando em Modo Local (LocalStorage)'}
-            >
-              <Database className="w-3.5 h-3.5" />
-              <span>{isSupabaseConfigured ? 'Supabase Live' : 'Modo Local'}</span>
-            </div>
+
 
 
 
