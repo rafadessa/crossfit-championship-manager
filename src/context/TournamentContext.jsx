@@ -48,6 +48,16 @@ export const TournamentProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState('rx_male');
   const [activeHeatForTimer, setActiveHeatForTimer] = useState(null);
 
+  // Secret URL-based admin access: navigate to /#admin to log in silently
+  useEffect(() => {
+    if (window.location.hash === '#admin') {
+      setIsAdminLoggedIn(true);
+      localStorage.setItem('fitscore_admin_auth', 'true');
+      // Remove the hash from the URL so it's not visible
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  }, []);
+
   // PWA Installation Hook State
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);

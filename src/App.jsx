@@ -15,13 +15,12 @@ const MainContent = () => {
     <div className="min-h-screen flex flex-col bg-[#0B0D12]">
       <Navbar />
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 pb-28 md:pb-8">
-        {activeTab === 'login' && <AdminLogin />}
         {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'leaderboard' && <Leaderboard />}
         
         {/* Admin Protected Views */}
-        {activeTab === 'wods' && (isAdminLoggedIn ? <WodManager /> : <AdminLogin />)}
-        {activeTab === 'athletes' && (isAdminLoggedIn ? <AthletesManager /> : <AdminLogin />)}
+        {activeTab === 'wods' && (isAdminLoggedIn ? <WodManager /> : null)}
+        {activeTab === 'athletes' && (isAdminLoggedIn ? <AthletesManager /> : null)}
 
       </main>
       

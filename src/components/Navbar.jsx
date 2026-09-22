@@ -5,7 +5,6 @@ import {
   Dumbbell, 
   Users, 
   LayoutDashboard,
-  Lock,
   Trash2,
   Sparkles,
   X,
@@ -135,8 +134,8 @@ export const Navbar = () => {
               <span>{isSupabaseConfigured ? 'Supabase Live' : 'Modo Local'}</span>
             </div>
 
-            {/* Admin Login/Logout */}
-            {isAdminLoggedIn ? (
+            {/* Admin indicator - only shows logout when logged in */}
+            {isAdminLoggedIn && (
               <div className="flex items-center gap-1 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -151,14 +150,6 @@ export const Navbar = () => {
                   Sair
                 </button>
               </div>
-            ) : (
-              <button
-                onClick={() => setActiveTab('login')}
-                className="flex items-center gap-1 px-2.5 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white transition-all text-xs font-heading font-bold"
-                title="Acesso de Administrador"
-              >
-                <Lock className="w-3.5 h-3.5" />
-              </button>
             )}
 
             {/* Admin Data Actions - desktop only */}
