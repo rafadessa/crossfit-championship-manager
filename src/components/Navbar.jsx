@@ -102,9 +102,7 @@ export const Navbar = () => {
                   <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                   
-                  {isLocked && (
-                    <Lock className="w-3 h-3 text-red-400 ml-0.5" />
-                  )}
+
 
                   {item.badge && (
                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black uppercase tracking-widest ${
