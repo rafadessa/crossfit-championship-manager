@@ -68,7 +68,6 @@ export const ArenaTvMode = () => {
               <th className="py-4 px-4 w-20 text-center">POS</th>
               <th className="py-4 px-4 w-24 text-center">BIB</th>
               <th className="py-4 px-4 text-xl font-bold text-white">ATLETA / EQUIPE</th>
-              <th className="py-4 px-4 text-slate-400">BOX / AFILIADA</th>
               <th className="py-4 px-4 text-right pr-6 font-bold text-[#D60036]">PONTUAÇÃO TOTAL</th>
             </tr>
           </thead>
@@ -113,11 +112,6 @@ export const ArenaTvMode = () => {
                       {isSecond && <span className="text-2xl">🥈</span>}
                       {isThird && <span className="text-2xl">🥉</span>}
                     </div>
-                  </td>
-
-                  {/* Box */}
-                  <td className="py-4 px-4 text-slate-300 text-lg">
-                    {item.athlete.box || 'Independente'}
                   </td>
 
                   {/* Total Points */}

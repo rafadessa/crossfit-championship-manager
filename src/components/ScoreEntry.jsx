@@ -228,7 +228,7 @@ export const ScoreEntry = () => {
                 <option value="">-- Escolha uma Dupla --</option>
                 {wodAthletes.map(a => (
                   <option key={a.id} value={a.id}>
-                    #{a.bib} - {a.name} ({a.box})
+                    #{a.bib} - {a.name}
                   </option>
                 ))}
               </select>

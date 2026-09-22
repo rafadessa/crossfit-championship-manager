@@ -103,7 +103,7 @@ export const HeatManager = () => {
                         </div>
                         <div className="overflow-hidden">
                           <p className="text-xs font-bold text-white truncate">{athlete ? athlete.name : 'Vazia'}</p>
-                          {athlete && <p className="text-[10px] text-slate-400 truncate">#{athlete.bib} • {athlete.box}</p>}
+                          {athlete && <p className="text-[10px] text-slate-400 truncate">#{athlete.bib}</p>}
                         </div>
                       </div>
                     );

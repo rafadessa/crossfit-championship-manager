@@ -25,7 +25,7 @@ export const AthletesManager = () => {
     const matchesCategory = selectedCategoryFilter === 'ALL' || athlete.category === selectedCategoryFilter;
     const matchesSearch = athlete.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           athlete.bib.includes(searchTerm) ||
-                          athlete.box.toLowerCase().includes(searchTerm.toLowerCase());
+                          athlete.bib.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesCategory && matchesSearch;
   });
 
@@ -135,7 +135,7 @@ export const AthletesManager = () => {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar dupla, bib ou box..."
+              placeholder="Buscar dupla ou bib..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#0B0D12] border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#D60036]"
@@ -162,7 +162,7 @@ export const AthletesManager = () => {
                   </div>
                   <div>
                     <h4 className="font-heading font-bold text-white text-sm">{athlete.name}</h4>
-                    <p className="text-[11px] text-slate-400">{athlete.box || 'Independente'} • <span className="text-slate-300 font-semibold">{catObj?.name}</span></p>
+                    <p className="text-[11px] text-slate-400"><span className="text-slate-300 font-semibold">{catObj?.name}</span></p>
                   </div>
                 </div>
 
@@ -222,7 +222,7 @@ export const AthletesManager = () => {
                         {athlete.name}
                       </td>
                       <td className="text-slate-300">
-                        {athlete.box || 'Independente'}
+                        #{athlete.bib}
                       </td>
                       <td>
                         <span className="wod-chip bg-slate-800 text-slate-300 border border-white/10 text-[9px]">
@@ -306,18 +306,7 @@ export const AthletesManager = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Box / CT Afiliado</label>
-              <input
-                type="text"
-                placeholder="Ex: CrossFit IronBox"
-                value={formData.box}
-                onChange={e => setFormData({ ...formData, box: e.target.value })}
-                className="w-full h-12 px-4 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs focus:border-[#D60036] focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-2">
+              <div className="space-y-1.5">
               <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider block">Categoria</label>
               <select
                 value={formData.category}

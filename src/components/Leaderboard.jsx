@@ -17,7 +17,7 @@ export const Leaderboard = () => {
   const filteredOverall = overallStandings.filter(item => 
     item.athlete.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.athlete.bib.includes(searchTerm) ||
-    item.athlete.box.toLowerCase().includes(searchTerm.toLowerCase())
+    item.athlete.bib.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const activeWod = wods.find(w => w.id === selectedWodId);
@@ -25,7 +25,7 @@ export const Leaderboard = () => {
   const filteredWodRankings = wodRankings.filter(item =>
     item.athlete.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.athlete.bib.includes(searchTerm) ||
-    item.athlete.box.toLowerCase().includes(searchTerm.toLowerCase())
+    item.athlete.bib.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handlePrint = () => {
@@ -105,7 +105,7 @@ export const Leaderboard = () => {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Buscar dupla, bib ou box..."
+                placeholder="Buscar dupla ou bib..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#0B0D12] border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-[#D60036]"
@@ -161,7 +161,7 @@ export const Leaderboard = () => {
                           {item.athlete.name}
                         </h4>
                         <p className="text-[10px] text-slate-400 font-mono">
-                          #{item.athlete.bib} • {item.athlete.box || 'Independente'}
+                          #{item.athlete.bib}
                         </p>
                       </div>
                     </div>
@@ -210,7 +210,7 @@ export const Leaderboard = () => {
                   </div>
                   <div>
                     <h4 className="font-heading font-black text-white text-sm">{item.athlete.name}</h4>
-                    <p className="text-[10px] text-slate-400 font-mono">#{item.athlete.bib} • {item.athlete.box || 'Independente'}</p>
+                    <p className="text-[10px] text-slate-400 font-mono">#{item.athlete.bib}</p>
                   </div>
                 </div>
 
@@ -293,8 +293,6 @@ export const Leaderboard = () => {
                           </div>
                         </td>
 
-                        <td className="text-slate-400 text-xs">{item.athlete.box || 'Independente'}</td>
-
                         {categoryWods.map(wod => {
                           const wData = item.wodBreakdown[wod.id];
                           return (
@@ -341,7 +339,6 @@ export const Leaderboard = () => {
                   <th className="w-16 text-center">POS</th>
                   <th className="w-16 text-center">BIB</th>
                   <th>DUPLA</th>
-                  <th>BOX</th>
                   <th className="text-center">RESULTADO PROVA</th>
                   <th className="text-center">TIE-BREAK</th>
                   <th className="text-right pr-6">PONTOS CONQUISTADOS</th>
@@ -350,7 +347,7 @@ export const Leaderboard = () => {
               <tbody>
                 {filteredWodRankings.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-12 text-slate-500">
+                    <td colSpan={6} className="text-center py-12 text-slate-500">
                       Nenhum resultado registrado para esta prova.
                     </td>
                   </tr>
@@ -364,7 +361,6 @@ export const Leaderboard = () => {
                         #{item.athlete.bib}
                       </td>
                       <td className="font-heading font-extrabold text-white text-sm">{item.athlete.name}</td>
-                      <td className="text-slate-400 text-xs">{item.athlete.box || 'Independente'}</td>
                       <td className="text-center">
                         <span className="font-mono text-xs font-bold text-white bg-slate-900 px-3 py-1 rounded border border-white/10">
                           {item.scoreDisplay}

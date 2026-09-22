@@ -291,7 +291,7 @@ export const Dashboard = () => {
                           {item.athlete.name}
                           <span className="text-[11px] font-mono text-slate-400">#{item.athlete.bib}</span>
                         </h4>
-                        <p className="text-[11px] text-slate-400">{item.athlete.box || 'Independente'}</p>
+
                       </div>
                     </div>
 

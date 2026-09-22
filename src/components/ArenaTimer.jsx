@@ -224,7 +224,7 @@ export const ArenaTimer = () => {
                   <span className="text-[10px] font-mono font-black text-[#D4FF00]">RAIA {lane.lane}</span>
                   <p className="font-heading font-black text-white text-sm truncate">{athlete ? athlete.name : 'Livre'}</p>
                   {athlete && (
-                    <p className="text-[10px] text-slate-400">#{athlete.bib} • {athlete.box}</p>
+                    <p className="text-[10px] text-slate-400">#{athlete.bib}</p>
                   )}
                 </div>
               );
