@@ -29,11 +29,11 @@ export const ArenaTvMode = () => {
         {/* Event Logo */}
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/15 p-1.5 flex items-center justify-center shadow-xl">
-            <img src="/logo.png" alt="CrossGames GTI Logo" className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="Interno Gravataí GAMES 05 Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-heading text-3xl font-black tracking-wider text-white">CROSSGAMES GTI</span>
+              <span className="font-heading text-3xl font-black tracking-wider text-white">INTERNO GRAVATAÍ GAMES 05</span>
               <span className="bg-[#D60036] text-white text-xs font-black px-2 py-0.5 rounded tracking-widest animate-pulse font-heading">
                 TV ARENA
               </span>
@@ -136,7 +136,7 @@ export const ArenaTvMode = () => {
 
       {/* Footer ticker */}
       <div className="flex items-center justify-between text-xs font-mono text-slate-400 border-t border-white/10 pt-4">
-        <span>Transmissão Oficial de Resultados • CrossGames GTI</span>
+        <span>Transmissão Oficial de Resultados • Interno Gravataí GAMES 05</span>
         <span className="text-[#D60036] font-bold animate-pulse">● TRANSMISSÃO AO VIVO DA ARENA</span>
       </div>
 

@@ -67,7 +67,7 @@ export const Dashboard = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D60036] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D60036]"></span>
                 </span>
-                CROSSGAMES GTI LIVE
+                INTERNO GRAVATAÍ GAMES 05 LIVE
               </span>
 
               <button 
@@ -79,7 +79,7 @@ export const Dashboard = () => {
             </div>
             
             <h1 className="font-heading text-3xl md:text-5xl font-black tracking-tight leading-none text-white">
-              CAMPEONATO <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D60036] to-slate-200">CROSSGAMES GTI</span>
+              CAMPEONATO <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D60036] to-slate-200">INTERNO GRAVATAÍ GAMES 05</span>
             </h1>
             
             <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl">
@@ -137,7 +137,7 @@ export const Dashboard = () => {
             <div className="absolute -inset-2 bg-gradient-to-r from-[#D60036]/40 to-white/20 rounded-3xl blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
             <img 
               src="/logo.png" 
-              alt="CrossGames GTI Logo" 
+              alt="Interno Gravataí GAMES 05 Logo" 
               className="relative w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(214,0,54,0.4)]" 
             />
           </div>
@@ -251,7 +251,7 @@ export const Dashboard = () => {
               <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-[#D60036]" /> Ranking em Tempo Real
               </h2>
-              <p className="text-xs text-slate-400">Classificação CrossGames GTI oficial por pontos acumulados</p>
+              <p className="text-xs text-slate-400">Classificação Interno Gravataí GAMES 05 oficial por pontos acumulados</p>
             </div>
 
             {/* Category Selector */}

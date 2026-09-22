@@ -5,8 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { Leaderboard } from './components/Leaderboard';
 import { WodManager } from './components/WodManager';
 import { AthletesManager } from './components/AthletesManager';
-import { ScoreEntry } from './components/ScoreEntry';
-import { HeatManager } from './components/HeatManager';
+
 import { AdminLogin } from './components/AdminLogin';
 
 const MainContent = () => {
@@ -23,12 +22,11 @@ const MainContent = () => {
         {/* Admin Protected Views */}
         {activeTab === 'wods' && (isAdminLoggedIn ? <WodManager /> : <AdminLogin />)}
         {activeTab === 'athletes' && (isAdminLoggedIn ? <AthletesManager /> : <AdminLogin />)}
-        {activeTab === 'judge' && (isAdminLoggedIn ? <ScoreEntry /> : <AdminLogin />)}
-        {activeTab === 'heats' && (isAdminLoggedIn ? <HeatManager /> : <AdminLogin />)}
+
       </main>
       
       <footer className="border-t border-white/10 py-6 mb-20 md:mb-0 text-center text-xs text-slate-500 font-mono">
-        CrossGames GTI &copy; {new Date().getFullYear()} • Arena Championship Manager
+        Interno Gravataí GAMES 05 &copy; {new Date().getFullYear()} • Arena Championship Manager
       </footer>
     </div>
   );

@@ -1,14 +1,8 @@
-// Official CrossFit Points Table (Standard 100 Points Scale)
-export const POINT_TABLE = [
-  100, 95, 90, 87, 84, 81, 78, 75, 72, 69, 
-  66, 63, 60, 57, 54, 51, 48, 45, 42, 39,
-  36, 33, 30, 27, 24, 21, 18, 15, 12, 9
-];
-
+// Golf-style scoring: 1st place = 1 point, 2nd = 2 points, etc.
+// The athlete with the LEAST total points wins the overall standings.
 export const getPointsForRank = (rank) => {
   if (rank <= 0) return 0;
-  if (rank <= POINT_TABLE.length) return POINT_TABLE[rank - 1];
-  return Math.max(1, 10 - (rank - POINT_TABLE.length));
+  return rank; // position directly equals points earned
 };
 
 // Formats seconds (e.g. 385.4) to "06:25.4" or "06:25"
@@ -186,8 +180,8 @@ export const calculateOverallStandings = (category, athletes, wods, scores) => {
     };
   });
 
-  // Sort overall standings by total points descending
-  overall.sort((a, b) => b.totalPoints - a.totalPoints);
+  // Sort overall standings by total points ascending (least points = winner)
+  overall.sort((a, b) => a.totalPoints - b.totalPoints);
 
   // Add overall rank position
   return overall.map((item, idx) => ({

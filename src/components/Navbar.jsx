@@ -4,8 +4,6 @@ import {
   Trophy, 
   Dumbbell, 
   Users, 
-  ClipboardCheck, 
-  Layers, 
   LayoutDashboard,
   Lock,
   Trash2,
@@ -36,17 +34,14 @@ export const Navbar = () => {
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
     { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, badge: 'LIVE', public: true },
     { id: 'wods', label: 'WODs', icon: Dumbbell, public: false },
-    { id: 'athletes', label: 'Duplas', icon: Users, public: false },
-    { id: 'judge', label: 'Área do Juiz', icon: ClipboardCheck, public: false },
-    { id: 'heats', label: 'Baterias', icon: Layers, public: false }
+    { id: 'athletes', label: 'Duplas', icon: Users, public: false }
   ];
 
-  // Bottom nav for mobile: show install button if installable, otherwise 4 nav items
+  // Bottom nav for mobile
   const bottomNavItems = [
     { id: 'dashboard', label: 'Painel', icon: LayoutDashboard, public: true },
     { id: 'leaderboard', label: 'Líderes', icon: Trophy, badge: 'LIVE', public: true },
-    { id: 'athletes', label: 'Duplas', icon: Users, public: false },
-    { id: 'heats', label: 'Baterias', icon: Layers, public: false }
+    { id: 'athletes', label: 'Duplas', icon: Users, public: false }
   ];
 
   const handleTabClick = (item) => {
@@ -71,15 +66,15 @@ export const Navbar = () => {
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-[#D60036] to-white/40 rounded-xl blur-sm opacity-60 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative w-11 h-11 rounded-xl bg-[#0B0D12] border border-white/15 flex items-center justify-center p-1 group-hover:scale-105 transition-transform overflow-hidden">
-                <img src="/logo.png" alt="CrossGames GTI Logo" className="w-full h-full object-contain" />
+                <img src="/logo.png" alt="Interno Gravataí GAMES 05 Logo" className="w-full h-full object-contain" />
               </div>
             </div>
 
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-heading text-xl font-black tracking-wider text-white">CROSSGAMES</span>
+                <span className="font-heading text-xl font-black tracking-wider text-white">INTERNO GRAVATAÍ</span>
                 <span className="bg-[#D60036] text-white text-[10px] font-black px-1.5 py-0.5 rounded font-heading tracking-wider uppercase shadow-md">
-                  GTI
+                  GAMES 05
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest hidden sm:block -mt-0.5">
@@ -264,7 +259,7 @@ export const Navbar = () => {
             </div>
 
             <h3 className="font-heading text-lg font-black text-white mb-1">
-              Instalar CrossGames GTI
+              Instalar Interno Gravataí GAMES 05
             </h3>
             <p className="text-xs text-slate-400 mb-5 leading-relaxed">
               Adicione o app à sua tela inicial para acesso rápido sem precisar abrir o navegador.

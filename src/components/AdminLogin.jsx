@@ -36,7 +36,7 @@ export const AdminLogin = () => {
           <div>
             <h2 className="font-heading text-2xl font-black text-white tracking-wide">ÁREA DO ORGANIZADOR</h2>
             <p className="text-xs text-slate-400 mt-1">
-              Acesso administrativo CrossGames GTI para gerenciar WODs, atletas, baterias e lançar notas.
+              Acesso administrativo Interno Gravataí GAMES 05 para gerenciar WODs, atletas e lançar notas.
             </p>
           </div>
         </div>
