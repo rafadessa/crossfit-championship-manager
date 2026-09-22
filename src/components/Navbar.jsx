@@ -11,7 +11,8 @@ import {
   Share,
   Download,
   ClipboardCheck,
-  Smartphone
+  Smartphone,
+  Database
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -123,6 +124,21 @@ export const Navbar = () => {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
+
+            {/* Supabase DB Status Badge - admin only */}
+            {isAdminLoggedIn && (
+              <div 
+                className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-heading font-black tracking-wide ${
+                  isSupabaseConfigured
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                    : 'bg-white/5 border-white/10 text-slate-400'
+                }`}
+                title={isSupabaseConfigured ? 'Banco de dados Supabase Conectado' : 'Operando em Modo Local (LocalStorage)'}
+              >
+                <Database className="w-3.5 h-3.5" />
+                <span>{isSupabaseConfigured ? 'Supabase Live' : 'Modo Local'}</span>
+              </div>
+            )}
 
 
 

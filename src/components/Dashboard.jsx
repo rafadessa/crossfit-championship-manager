@@ -121,13 +121,6 @@ export const Dashboard = () => {
                     <input type="file" accept=".json" onChange={handleFileImport} className="hidden" />
                   </label>
                 </>
-              ) : (
-                <button 
-                  onClick={() => setActiveTab('login')}
-                  className="btn-wod btn-wod-secondary"
-                >
-                  <Lock className="w-4 h-4 text-red-400" /> Acesso Admin
-                </button>
               )}
             </div>
           </div>

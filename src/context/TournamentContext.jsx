@@ -279,8 +279,8 @@ export const TournamentProvider = ({ children }) => {
     setAthletes(prev => prev.filter(a => a.id !== id));
     setScores(prev => prev.filter(s => s.athleteId !== id));
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('athletes').delete().eq('id', id);
       await supabase.from('scores').delete().eq('athlete_id', id);
+      await supabase.from('athletes').delete().eq('id', id);
     }
   };
 
@@ -326,9 +326,9 @@ export const TournamentProvider = ({ children }) => {
     setScores(prev => prev.filter(s => s.wodId !== id));
     setHeats(prev => prev.filter(h => h.wodId !== id));
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('wods').delete().eq('id', id);
       await supabase.from('scores').delete().eq('wod_id', id);
       await supabase.from('heats').delete().eq('wod_id', id);
+      await supabase.from('wods').delete().eq('id', id);
     }
   };
 
