@@ -23,7 +23,12 @@ export const parseTimeToSeconds = (timeStr) => {
   if (!timeStr) return 0;
   if (typeof timeStr === 'number') return timeStr;
   
-  const parts = String(timeStr).trim().split(':');
+  let str = String(timeStr).trim();
+  if (str.includes('|||PUBLISH:')) {
+    str = str.split('|||PUBLISH:')[0];
+  }
+  
+  const parts = str.split(':');
   if (parts.length === 2) {
     const mins = parseFloat(parts[0]) || 0;
     const secs = parseFloat(parts[1]) || 0;
@@ -36,8 +41,17 @@ export const parseTimeToSeconds = (timeStr) => {
 export const calculateWodRankings = (wod, athletes, scores) => {
   if (!wod) return [];
 
-  // Filter scores for this specific WOD
-  const wodScores = scores.filter(s => s.wodId === wod.id);
+  // Filter scores for this specific WOD and hide delayed scores
+  const now = Date.now();
+  const wodScores = scores.filter(s => {
+    if (s.wodId !== wod.id) return false;
+    if (s.timeStr && s.timeStr.includes('|||PUBLISH:')) {
+      const parts = s.timeStr.split('|||PUBLISH:');
+      const publishAt = parseInt(parts[1], 10);
+      if (publishAt > now) return false; // Still hidden
+    }
+    return true;
+  });
 
   // Map athletes in this category with their scores
   const results = athletes

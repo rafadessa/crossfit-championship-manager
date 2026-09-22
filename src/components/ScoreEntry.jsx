@@ -18,6 +18,7 @@ export const ScoreEntry = () => {
   const [weight, setWeight] = useState('');
   const [tiebreakMins, setTiebreakMins] = useState('');
   const [tiebreakSecs, setTiebreakSecs] = useState('');
+  const [publishDelay, setPublishDelay] = useState(0);
 
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -80,12 +81,18 @@ export const ScoreEntry = () => {
     const totalSeconds = (parseInt(mins) || 0) * 60 + (parseInt(secs) || 0);
     const tbSeconds = (parseInt(tiebreakMins) || 0) * 60 + (parseInt(tiebreakSecs) || 0);
 
+    let finalTimeStr = formatTime(totalSeconds);
+    if (publishDelay > 0) {
+      const publishAt = Date.now() + (publishDelay * 60000);
+      finalTimeStr = `${finalTimeStr}|||PUBLISH:${publishAt}`;
+    }
+
     const scoreData = {
       wodId: activeWod.id,
       athleteId: selectedAthleteId,
       isCap,
       timeInSeconds: totalSeconds > 0 ? totalSeconds : null,
-      timeStr: formatTime(totalSeconds),
+      timeStr: finalTimeStr,
       reps: parseInt(reps) || 0,
       rounds: parseInt(rounds) || 0,
       weight: parseFloat(weight) || 0,
@@ -438,23 +445,124 @@ export const ScoreEntry = () => {
                 </div>
               </div>
 
-              {/* Save Button */}
-              <button
-                type="submit"
-                className="btn-wod btn-wod-primary w-full py-3 text-sm font-black"
-              >
-                SALVAR E CONFIRMAR NOTA
-              </button>
+              {/* Submit Buttons */}
+              <div className="pt-2">
+                <div className="flex flex-col gap-3">
+                  <button
+                    type="submit"
+                    className="w-full btn-wod btn-wod-primary py-4 text-base tracking-widest shadow-lg shadow-[#D60036]/20"
+                  >
+                    SALVAR NOTA AGORA
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => { setPublishDelay(30); handleSubmit(new Event('submit')); }}
+                      className="flex-1 btn-wod bg-slate-800 text-slate-300 border-slate-700 py-3 text-[10px] hover:bg-slate-700"
+                    >
+                      SALVAR E OCULTAR (30m)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setPublishDelay(60); handleSubmit(new Event('submit')); }}
+                      className="flex-1 btn-wod bg-slate-800 text-slate-300 border-slate-700 py-3 text-[10px] hover:bg-slate-700"
+                    >
+                      SALVAR E OCULTAR (1h)
+                    </button>
+                  </div>
+                </div>
+              </div>
 
             </div>
           ) : (
-            <div className="p-6 text-center border border-dashed border-white/20 rounded-xl text-slate-500 text-xs">
-              Selecione um atleta acima para abrir o teclado de notas.
+            <div className="p-8 rounded-xl bg-white/5 border border-white/10 text-center">
+              <p className="text-slate-400 text-sm">Selecione uma dupla para lançar ou editar a nota.</p>
             </div>
           )}
 
         </form>
       </div>
+
+      {/* History Table */}
+      {activeWod && (
+        <div className="wod-card p-5 md:p-6 border-white/10">
+          <h3 className="font-heading text-lg font-black text-white border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
+            <span>Histórico de Notas ({activeWod.name})</span>
+            <span className="text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">
+              {scores.filter(s => s.wodId === activeWod.id).length} lançamentos
+            </span>
+          </h3>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="py-3 px-2 text-xs font-bold text-slate-400 uppercase">Dupla</th>
+                  <th className="py-3 px-2 text-xs font-bold text-slate-400 uppercase text-center">Score</th>
+                  <th className="py-3 px-2 text-xs font-bold text-slate-400 uppercase text-center">Tiebreak</th>
+                  <th className="py-3 px-2 text-xs font-bold text-slate-400 uppercase text-center">Status</th>
+                  <th className="py-3 px-2 text-xs font-bold text-slate-400 uppercase text-center">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {scores.filter(s => s.wodId === activeWod.id).map(score => {
+                  const athlete = athletes.find(a => a.id === score.athleteId);
+                  
+                  // Parse delayed publish time if any
+                  let isHidden = false;
+                  if (score.timeStr && score.timeStr.includes('|||PUBLISH:')) {
+                    const publishAt = parseInt(score.timeStr.split('|||PUBLISH:')[1], 10);
+                    if (publishAt > Date.now()) isHidden = true;
+                  }
+
+                  return (
+                    <tr key={score.id} className="hover:bg-white/5 transition-colors group">
+                      <td className="py-3 px-2">
+                        <div className="font-bold text-white text-sm">{athlete?.name || 'Desconhecido'}</div>
+                        <div className="text-[10px] text-slate-400 font-mono">#{athlete?.bib}</div>
+                      </td>
+                      <td className="py-3 px-2 text-center text-slate-300 font-mono text-sm">
+                        {score.isCap ? 'CAP' : (score.reps || score.weight || score.rounds || score.timeStr?.split('|||')[0] || '--')}
+                      </td>
+                      <td className="py-3 px-2 text-center text-slate-400 font-mono text-xs">
+                        {score.tiebreakTime || '--'}
+                      </td>
+                      <td className="py-3 px-2 text-center">
+                        {isHidden ? (
+                          <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] px-2 py-1 rounded font-bold uppercase tracking-wider">
+                            Oculto
+                          </span>
+                        ) : (
+                          <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] px-2 py-1 rounded font-bold uppercase tracking-wider">
+                            Público
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-2 text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleAthleteChange(score.athleteId)}
+                          className="bg-white/5 hover:bg-white/10 text-white text-xs px-3 py-1.5 rounded transition-colors"
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {scores.filter(s => s.wodId === activeWod.id).length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="py-8 text-center text-slate-500 text-sm">
+                      Nenhuma nota lançada para este WOD ainda.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
     </div>
   );
