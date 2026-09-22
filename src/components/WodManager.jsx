@@ -10,6 +10,7 @@ export const WodManager = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCatModalOpen, setIsCatModalOpen] = useState(false);
+  const [wodToDelete, setWodToDelete] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     type: 'for_time',
@@ -124,11 +125,7 @@ export const WodManager = () => {
                 </span>
 
                 <button
-                  onClick={() => {
-                    if (window.confirm(`Excluir o WOD "${wod.name}"?`)) {
-                      deleteWod(wod.id);
-                    }
-                  }}
+                  onClick={() => setWodToDelete(wod)}
                   className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
                   title="Excluir WOD"
                 >
@@ -317,6 +314,40 @@ export const WodManager = () => {
         isOpen={isCatModalOpen}
         onClose={() => setIsCatModalOpen(false)}
       />
+
+      {/* Delete Confirmation Modal */}
+      {wodToDelete && (
+        <Modal isOpen={!!wodToDelete} onClose={() => setWodToDelete(null)}>
+          <div className="p-6 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-500 mx-auto">
+              <Trash2 className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="font-heading text-xl font-black text-white">Excluir WOD?</h3>
+              <p className="text-sm text-slate-400 mt-2">
+                Tem certeza que deseja excluir o WOD <strong className="text-white">"{wodToDelete.name}"</strong>? Todas as notas vinculadas a ele serão apagadas.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={() => setWodToDelete(null)}
+                className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  deleteWod(wodToDelete.id);
+                  setWodToDelete(null);
+                }}
+                className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold"
+              >
+                Sim, Excluir
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
 
     </div>
   );

@@ -12,6 +12,7 @@ export const AthletesManager = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [editingAthlete, setEditingAthlete] = useState(null);
+  const [athleteToDelete, setAthleteToDelete] = useState(null);
 
   const [formData, setFormData] = useState({
     bib: '',
@@ -238,11 +239,7 @@ export const AthletesManager = () => {
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (window.confirm(`Excluir a dupla "${athlete.name}"?`)) {
-                                deleteAthlete(athlete.id);
-                              }
-                            }}
+                            onClick={() => setAthleteToDelete(athlete)}
                             className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
                             title="Excluir"
                           >
@@ -357,6 +354,40 @@ export const AthletesManager = () => {
         isOpen={isCatModalOpen}
         onClose={() => setIsCatModalOpen(false)}
       />
+
+      {/* Delete Confirmation Modal */}
+      {athleteToDelete && (
+        <Modal isOpen={!!athleteToDelete} onClose={() => setAthleteToDelete(null)}>
+          <div className="p-6 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-500 mx-auto">
+              <Trash2 className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="font-heading text-xl font-black text-white">Excluir Dupla?</h3>
+              <p className="text-sm text-slate-400 mt-2">
+                Tem certeza que deseja excluir a dupla <strong className="text-white">"{athleteToDelete.name}"</strong>? Todas as notas desta dupla também serão perdidas.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={() => setAthleteToDelete(null)}
+                className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  deleteAthlete(athleteToDelete.id);
+                  setAthleteToDelete(null);
+                }}
+                className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold"
+              >
+                Sim, Excluir
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
 
     </div>
   );
