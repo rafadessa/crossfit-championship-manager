@@ -83,6 +83,7 @@ export const TournamentProvider = ({ children }) => {
   // Active navigation tab
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedCategory, setSelectedCategory] = useState('rx_male');
+  const [selectedWodForLeaderboard, setSelectedWodForLeaderboard] = useState('OVERALL');
   const [activeHeatForTimer, setActiveHeatForTimer] = useState(null);
 
   // Admin access is via /admin path (handled in App.jsx)
@@ -401,6 +402,13 @@ export const TournamentProvider = ({ children }) => {
     }
   };
 
+  const deleteScore = async (scoreId) => {
+    setScores(prev => prev.filter(s => s.id !== scoreId));
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('scores').delete().eq('id', scoreId);
+    }
+  };
+
   const addHeat = async (newHeat) => {
     const heat = {
       ...newHeat,
@@ -553,6 +561,9 @@ export const TournamentProvider = ({ children }) => {
       updateWod,
       deleteWod,
       saveScore,
+      deleteScore,
+      selectedWodForLeaderboard,
+      setSelectedWodForLeaderboard,
       addHeat,
       updateHeatStatus,
       clearAllData,

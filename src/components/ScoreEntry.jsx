@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { ClipboardCheck, CheckCircle2, Dumbbell, Clock, Plus, Minus, Flame, Play, Square, RotateCcw, Timer } from 'lucide-react';
+import { ClipboardCheck, CheckCircle2, Dumbbell, Clock, Plus, Minus, Flame, Play, Square, RotateCcw, Timer, Trash2, Edit3 } from 'lucide-react';
 import { formatTime } from '../utils/scoring';
 
 export const ScoreEntry = () => {
-  const { wods, athletes, scores, saveScore } = useTournament();
+  const { wods, athletes, scores, saveScore, deleteScore } = useTournament();
 
   const [selectedWodId, setSelectedWodId] = useState(wods[0]?.id || '');
   const [selectedAthleteId, setSelectedAthleteId] = useState('');
+
+  useEffect(() => {
+    if ((!selectedWodId || !wods.some(w => w.id === selectedWodId)) && wods.length > 0) {
+      setSelectedWodId(wods[0].id);
+    }
+  }, [wods, selectedWodId]);
   
   // Score Input Fields State
   const [isCap, setIsCap] = useState(false);
@@ -107,6 +113,19 @@ export const ScoreEntry = () => {
     setTimeout(() => {
       setSuccessMessage('');
     }, 4000);
+  };
+
+  const handleDeleteScore = (scoreId, athleteName) => {
+    if (window.confirm(`Tem certeza que deseja excluir a nota de "${athleteName || 'esta dupla'}" neste WOD?`)) {
+      deleteScore(scoreId);
+      const deletedScore = scores.find(s => s.id === scoreId);
+      if (deletedScore && deletedScore.athleteId === selectedAthleteId) {
+        setIsCap(false);
+        setMins(''); setSecs(''); setReps(''); setRounds(''); setWeight(''); setTiebreakMins(''); setTiebreakSecs('');
+      }
+      setSuccessMessage('Nota excluída com sucesso!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    }
   };
 
   return (
@@ -471,6 +490,22 @@ export const ScoreEntry = () => {
                       SALVAR E OCULTAR (1h)
                     </button>
                   </div>
+
+                  {scores.some(s => s.wodId === activeWod?.id && s.athleteId === selectedAthleteId) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const existingScore = scores.find(s => s.wodId === activeWod?.id && s.athleteId === selectedAthleteId);
+                        const athObj = athletes.find(a => a.id === selectedAthleteId);
+                        if (existingScore) {
+                          handleDeleteScore(existingScore.id, athObj?.name);
+                        }
+                      }}
+                      className="w-full py-2.5 px-4 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 flex items-center justify-center gap-2 font-heading font-bold text-xs transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" /> Excluir Esta Nota
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -540,13 +575,29 @@ export const ScoreEntry = () => {
                         )}
                       </td>
                       <td className="py-3 px-2 text-center">
-                        <button
-                          type="button"
-                          onClick={() => handleAthleteChange(score.athleteId)}
-                          className="bg-white/5 hover:bg-white/10 text-white text-xs px-3 py-1.5 rounded transition-colors"
-                        >
-                          Editar
-                        </button>
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleAthleteChange(score.athleteId);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="inline-flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-lg transition-colors font-bold"
+                            title="Editar nota desta dupla"
+                          >
+                            <Edit3 className="w-3.5 h-3.5 text-blue-400" />
+                            <span>Editar</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteScore(score.id, athlete?.name)}
+                            className="inline-flex items-center gap-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 text-xs px-2.5 py-1.5 rounded-lg transition-colors font-bold"
+                            title="Excluir nota permanentemente"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Excluir</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

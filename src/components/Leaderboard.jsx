@@ -4,9 +4,19 @@ import { calculateOverallStandings, calculateWodRankings } from '../utils/scorin
 import { Trophy, Search, Dumbbell, Award, Printer, Crown, Sparkles, SlidersHorizontal } from 'lucide-react';
 
 export const Leaderboard = () => {
-  const { categories, wods, athletes, scores, selectedCategory, setSelectedCategory } = useTournament();
+  const { 
+    categories, 
+    wods, 
+    athletes, 
+    scores, 
+    selectedCategory, 
+    setSelectedCategory,
+    selectedWodForLeaderboard,
+    setSelectedWodForLeaderboard 
+  } = useTournament();
   
-  const [selectedWodId, setSelectedWodId] = useState('OVERALL');
+  const selectedWodId = selectedWodForLeaderboard || 'OVERALL';
+  const setSelectedWodId = setSelectedWodForLeaderboard;
   const [searchTerm, setSearchTerm] = useState('');
 
   const categoryWods = wods.filter(w => w.category === selectedCategory || w.category === 'ALL');

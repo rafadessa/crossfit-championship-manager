@@ -13,7 +13,9 @@ import {
   PlusCircle,
   Sparkles,
   Crown,
-  Download
+  Download,
+  ChevronRight,
+  Award
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -26,6 +28,7 @@ export const Dashboard = () => {
     setActiveTab, 
     setSelectedCategory,
     selectedCategory,
+    setSelectedWodForLeaderboard,
     isAdminLoggedIn,
     loadSampleData,
     triggerPwaInstall,
@@ -226,6 +229,116 @@ export const Dashboard = () => {
         </div>
       </div>
 
+      {/* PROVAS SEPARADAS POR CATEGORIAS (PÁGINA INICIAL / PÚBLICO) */}
+      <div className="wod-card p-5 md:p-6 space-y-5 border-white/15">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div>
+            <h2 className="font-heading text-2xl font-black text-white flex items-center gap-2">
+              <Dumbbell className="w-6 h-6 text-[#D60036]" /> Provas por Categoria
+            </h2>
+            <p className="text-xs text-slate-400">
+              Selecione a categoria e clique na prova para ver sua classificação e resultados
+            </p>
+          </div>
+
+          {/* Category selection pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 no-scrollbar">
+            {categories.map(cat => {
+              const isSelected = selectedCategory === cat.id;
+              const catWodsCount = wods.filter(w => w.category === cat.id || w.category === 'ALL').length;
+
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-heading font-extrabold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-[#D60036] to-[#990024] text-white shadow-md font-black scale-105'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  }`}
+                >
+                  <span>{cat.name}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-white/10 text-slate-400'}`}>
+                    {catWodsCount}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* WOD Cards Grid for the selected category */}
+        {(() => {
+          const categoryWods = wods.filter(w => w.category === selectedCategory || w.category === 'ALL');
+          const currentCategory = categories.find(c => c.id === selectedCategory) || categories[0];
+
+          if (categoryWods.length === 0) {
+            return (
+              <div className="py-10 text-center text-slate-500 space-y-2">
+                <Dumbbell className="w-10 h-10 stroke-[1] mx-auto text-slate-600" />
+                <p className="text-sm font-heading font-bold text-slate-400">Nenhuma prova cadastrada para {currentCategory?.name}</p>
+                <p className="text-xs text-slate-500">Assim que as provas forem publicadas, elas aparecerão aqui.</p>
+              </div>
+            );
+          }
+
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {categoryWods.map((wod) => {
+                const wodScoresCount = scores.filter(s => s.wodId === wod.id).length;
+
+                return (
+                  <div
+                    key={wod.id}
+                    onClick={() => {
+                      setSelectedWodForLeaderboard(wod.id);
+                      setActiveTab('leaderboard');
+                    }}
+                    className="group relative p-4 rounded-xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 hover:border-[#D60036]/60 hover:bg-white/[0.08] transition-all cursor-pointer shadow-lg hover:shadow-[#D60036]/10 flex flex-col justify-between"
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/30 text-[10px]">
+                          {wod.type.replace('_', ' ')}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                          {wodScoresCount} {wodScoresCount === 1 ? 'nota' : 'notas'}
+                        </span>
+                      </div>
+
+                      <h3 className="font-heading text-lg font-black text-white group-hover:text-[#D60036] transition-colors flex items-center justify-between">
+                        <span>{wod.name}</span>
+                        <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#D60036] group-hover:translate-x-1 transition-all" />
+                      </h3>
+
+                      {wod.description && (
+                        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                          {wod.description}
+                        </p>
+                      )}
+
+                      {wod.timeCap && (
+                        <p className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+                          <Timer className="w-3 h-3 text-slate-400" />
+                          Time Cap: {Math.floor(wod.timeCap / 60)} min
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+                      <span className="text-[10px] font-heading font-black text-[#D60036] uppercase tracking-wider group-hover:underline flex items-center gap-1">
+                        <Award className="w-3.5 h-3.5" /> Ver Classificação da Prova
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#D60036] group-hover:translate-x-1 transition-all" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
+      </div>
+
       {/* Main Content Grid: Leaderboard Preview & Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
@@ -328,9 +441,17 @@ export const Dashboard = () => {
             ) : (
               <div className="space-y-2">
                 {wods.map(wod => (
-                  <div key={wod.id} className="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-white/15 transition-all">
+                  <div 
+                    key={wod.id} 
+                    onClick={() => {
+                      setSelectedCategory(wod.category === 'ALL' ? selectedCategory : wod.category);
+                      setSelectedWodForLeaderboard(wod.id);
+                      setActiveTab('leaderboard');
+                    }}
+                    className="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-[#D60036]/50 hover:bg-white/10 transition-all cursor-pointer group"
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white">{wod.name}</span>
+                      <span className="text-xs font-bold text-white group-hover:text-[#D60036] transition-colors">{wod.name}</span>
                       <span className="wod-chip bg-white/10 text-slate-200 border border-white/20 text-[9px]">
                         {wod.type.replace('_', ' ')}
                       </span>
