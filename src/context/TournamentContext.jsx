@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { 
   INITIAL_CATEGORIES, 
   INITIAL_WODS, 
@@ -9,6 +9,41 @@ import {
 import { supabase, isSupabaseConfigured } from '../utils/supabaseClient';
 
 const TournamentContext = createContext();
+
+// Map DB rows (snake_case) to the camelCase shape used by the UI
+const mapWod = (w) => ({
+  ...w,
+  timeCap: w.time_cap,
+  repsPerRound: w.reps_per_round,
+  tiebreakRule: w.tiebreak_rule
+});
+
+const mapScore = (s) => ({
+  ...s,
+  wodId: s.wod_id,
+  athleteId: s.athlete_id,
+  isCap: s.is_cap,
+  timeInSeconds: s.time_in_seconds,
+  timeStr: s.time_str,
+  tiebreakTime: s.tiebreak_time
+});
+
+const mapHeat = (h) => ({
+  ...h,
+  wodId: h.wod_id,
+  startTime: h.start_time
+});
+
+const identity = (x) => x;
+
+// Insert or merge a row into a list by id (keeps existing order)
+const upsertById = (list, row) => {
+  const idx = list.findIndex(item => item.id === row.id);
+  if (idx === -1) return [...list, row];
+  const updated = [...list];
+  updated[idx] = { ...updated[idx], ...row };
+  return updated;
+};
 
 export const TournamentProvider = ({ children }) => {
   // Admin auth is SESSION-ONLY (not persisted) — access via secret URL only
@@ -58,10 +93,15 @@ export const TournamentProvider = ({ children }) => {
   const [showIosInstallModal, setShowIosInstallModal] = useState(false);
 
   // Supabase Initial Fetch & Realtime Synchronization
+  const fetchSeqRef = useRef(0);
+
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return;
 
     const fetchAllFromSupabase = async () => {
+      // Only the most recent fetch is allowed to update state, so a slow
+      // older response can never overwrite newer data.
+      const seq = ++fetchSeqRef.current;
       try {
         const [catRes, wodRes, athRes, scRes, heatRes] = await Promise.all([
           supabase.from('categories').select('*').order('created_at', { ascending: true }),
@@ -71,38 +111,15 @@ export const TournamentProvider = ({ children }) => {
           supabase.from('heats').select('*').order('created_at', { ascending: true })
         ]);
 
+        if (seq !== fetchSeqRef.current) return; // a newer fetch is in flight
+
         if (catRes.data && catRes.data.length > 0) {
           setCategories(catRes.data);
         }
-        if (wodRes.data) {
-          setWods(wodRes.data.map(w => ({
-            ...w,
-            timeCap: w.time_cap,
-            repsPerRound: w.reps_per_round,
-            tiebreakRule: w.tiebreak_rule
-          })));
-        }
-        if (athRes.data) {
-          setAthletes(athRes.data);
-        }
-        if (scRes.data) {
-          setScores(scRes.data.map(s => ({
-            ...s,
-            wodId: s.wod_id,
-            athleteId: s.athlete_id,
-            isCap: s.is_cap,
-            timeInSeconds: s.time_in_seconds,
-            timeStr: s.time_str,
-            tiebreakTime: s.tiebreak_time
-          })));
-        }
-        if (heatRes.data) {
-          setHeats(heatRes.data.map(h => ({
-            ...h,
-            wodId: h.wod_id,
-            startTime: h.start_time
-          })));
-        }
+        if (wodRes.data) setWods(wodRes.data.map(mapWod));
+        if (athRes.data) setAthletes(athRes.data);
+        if (scRes.data) setScores(scRes.data.map(mapScore));
+        if (heatRes.data) setHeats(heatRes.data.map(mapHeat));
       } catch (err) {
         console.warn('Error fetching Supabase data:', err);
       }
@@ -110,14 +127,60 @@ export const TournamentProvider = ({ children }) => {
 
     fetchAllFromSupabase();
 
-    // Subscribe to Postgres Realtime Changes across all tables
+    // Apply each realtime change DIRECTLY to local state (no refetch) so
+    // updates appear instantly for both admin and public viewers.
+    const tableHandlers = {
+      categories: { set: setCategories, map: identity },
+      wods: { set: setWods, map: mapWod },
+      athletes: { set: setAthletes, map: identity },
+      scores: { set: setScores, map: mapScore },
+      heats: { set: setHeats, map: mapHeat }
+    };
+
+    const handleRealtimeChange = (payload) => {
+      const handler = tableHandlers[payload.table];
+      if (!handler) return;
+
+      if (payload.eventType === 'DELETE') {
+        const deletedId = payload.old?.id;
+        if (!deletedId) return;
+        handler.set(prev => prev.filter(item => item.id !== deletedId));
+      } else if (payload.new) {
+        const row = handler.map(payload.new);
+        handler.set(prev => upsertById(prev, row));
+      }
+    };
+
+    let hasSubscribedOnce = false;
     const channel = supabase.channel('schema-db-changes')
-      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
-        fetchAllFromSupabase();
-      })
-      .subscribe();
+      .on('postgres_changes', { event: '*', schema: 'public' }, handleRealtimeChange)
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          // On reconnection, resync to recover any events missed while offline
+          if (hasSubscribedOnce) fetchAllFromSupabase();
+          hasSubscribedOnce = true;
+        }
+      });
+
+    // Resync when the user returns to the app (mobile background, tab switch)
+    // or the network comes back — realtime events may have been missed.
+    let resyncTimer;
+    const scheduleResync = () => {
+      clearTimeout(resyncTimer);
+      resyncTimer = setTimeout(fetchAllFromSupabase, 150);
+    };
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') scheduleResync();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('online', scheduleResync);
+    window.addEventListener('focus', scheduleResync);
 
     return () => {
+      clearTimeout(resyncTimer);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('online', scheduleResync);
+      window.removeEventListener('focus', scheduleResync);
       supabase.removeChannel(channel);
     };
   }, []);
@@ -156,27 +219,11 @@ export const TournamentProvider = ({ children }) => {
     }
   };
 
-  // BroadcastChannel and window storage listener for real-time multi-tab/window sync
+  // Multi-tab sync on the same browser via the native `storage` event.
+  // (It only fires in OTHER tabs and only when the value actually changes,
+  // so it cannot loop. The previous BroadcastChannel approach echoed back to
+  // the sending tab and caused an endless re-render loop.)
   useEffect(() => {
-    let bc;
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        bc = new BroadcastChannel('fitscore_sync_channel');
-        bc.onmessage = (event) => {
-          if (event.data && event.data.type === 'SYNC_STATE') {
-            const { categories, wods, athletes, scores, heats } = event.data.payload;
-            if (categories) setCategories(categories);
-            if (wods) setWods(wods);
-            if (athletes) setAthletes(athletes);
-            if (scores) setScores(scores);
-            if (heats) setHeats(heats);
-          }
-        };
-      }
-    } catch (err) {
-      console.warn('BroadcastChannel not supported:', err);
-    }
-
     const handleStorageEvent = (e) => {
       if (e.key === 'fitscore_categories' && e.newValue) setCategories(JSON.parse(e.newValue));
       if (e.key === 'fitscore_wods' && e.newValue) setWods(JSON.parse(e.newValue));
@@ -189,47 +236,29 @@ export const TournamentProvider = ({ children }) => {
 
     return () => {
       window.removeEventListener('storage', handleStorageEvent);
-      if (bc) bc.close();
     };
   }, []);
-
-  const broadcastStateChange = (payload) => {
-    try {
-      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('fitscore_sync_channel');
-        bc.postMessage({ type: 'SYNC_STATE', payload });
-        bc.close();
-      }
-    } catch (err) {
-      console.warn('Broadcast failed:', err);
-    }
-  };
 
   // (Admin state is session-only, intentionally not synced to localStorage)
 
   useEffect(() => {
     localStorage.setItem('fitscore_categories', JSON.stringify(categories));
-    broadcastStateChange({ categories });
   }, [categories]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_wods', JSON.stringify(wods));
-    broadcastStateChange({ wods });
   }, [wods]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_athletes', JSON.stringify(athletes));
-    broadcastStateChange({ athletes });
   }, [athletes]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_scores', JSON.stringify(scores));
-    broadcastStateChange({ scores });
   }, [scores]);
 
   useEffect(() => {
     localStorage.setItem('fitscore_heats', JSON.stringify(heats));
-    broadcastStateChange({ heats });
   }, [heats]);
 
   // Admin Auth Handlers
@@ -279,8 +308,10 @@ export const TournamentProvider = ({ children }) => {
     setAthletes(prev => prev.filter(a => a.id !== id));
     setScores(prev => prev.filter(s => s.athleteId !== id));
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('scores').delete().eq('athlete_id', id);
-      await supabase.from('athletes').delete().eq('id', id);
+      await Promise.all([
+        supabase.from('scores').delete().eq('athlete_id', id),
+        supabase.from('athletes').delete().eq('id', id)
+      ]);
     }
   };
 
@@ -326,27 +357,32 @@ export const TournamentProvider = ({ children }) => {
     setScores(prev => prev.filter(s => s.wodId !== id));
     setHeats(prev => prev.filter(h => h.wodId !== id));
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('scores').delete().eq('wod_id', id);
-      await supabase.from('heats').delete().eq('wod_id', id);
-      await supabase.from('wods').delete().eq('id', id);
+      await Promise.all([
+        supabase.from('scores').delete().eq('wod_id', id),
+        supabase.from('heats').delete().eq('wod_id', id),
+        supabase.from('wods').delete().eq('id', id)
+      ]);
     }
   };
 
   const saveScore = async (scoreData) => {
-    let targetId = scoreData.id;
+    // Resolve the id synchronously (React may run state updaters lazily,
+    // so it must not be computed inside the setScores callback).
+    const existing = scores.find(
+      s => s.wodId === scoreData.wodId && s.athleteId === scoreData.athleteId
+    );
+    const targetId = existing?.id || scoreData.id || `sc-${Date.now()}`;
+
     setScores(prev => {
       const existingIdx = prev.findIndex(
         s => s.wodId === scoreData.wodId && s.athleteId === scoreData.athleteId
       );
       if (existingIdx >= 0) {
-        targetId = prev[existingIdx].id || `sc-${Date.now()}`;
         const updated = [...prev];
         updated[existingIdx] = { ...updated[existingIdx], ...scoreData, id: targetId };
         return updated;
-      } else {
-        targetId = scoreData.id || `sc-${Date.now()}`;
-        return [...prev, { ...scoreData, id: targetId }];
       }
+      return [...prev, { ...scoreData, id: targetId }];
     });
 
     if (isSupabaseConfigured && supabase) {
