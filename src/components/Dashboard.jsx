@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { calculateOverallStandings } from '../utils/scoring';
+import { calculateOverallStandings, sortWodsByEventOrder } from '../utils/scoring';
 import { 
   Users, 
   Dumbbell, 
@@ -269,7 +269,7 @@ export const Dashboard = () => {
 
         {/* WOD Cards Grid for the selected category */}
         {(() => {
-          const categoryWods = wods.filter(w => w.category === selectedCategory || w.category === 'ALL');
+          const categoryWods = sortWodsByEventOrder(wods.filter(w => w.category === selectedCategory || w.category === 'ALL'));
           const currentCategory = categories.find(c => c.id === selectedCategory) || categories[0];
 
           if (categoryWods.length === 0) {

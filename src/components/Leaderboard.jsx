@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { calculateOverallStandings, calculateWodRankings } from '../utils/scoring';
+import { calculateOverallStandings, calculateWodRankings, sortWodsByEventOrder } from '../utils/scoring';
 import { Trophy, Search, Dumbbell, Award, Printer, Crown, Sparkles, SlidersHorizontal } from 'lucide-react';
 
 export const Leaderboard = () => {
@@ -20,7 +20,7 @@ export const Leaderboard = () => {
   const setSelectedWodId = setSelectedWodForLeaderboard;
   const [searchTerm, setSearchTerm] = useState('');
 
-  const categoryWods = wods.filter(w => w.category === selectedCategory || w.category === 'ALL');
+  const categoryWods = sortWodsByEventOrder(wods.filter(w => w.category === selectedCategory || w.category === 'ALL'));
   const currentCategoryObj = categories.find(c => c.id === selectedCategory);
 
   const overallStandings = calculateOverallStandings(selectedCategory, athletes, wods, scores, heats);

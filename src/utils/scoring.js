@@ -5,6 +5,33 @@ export const getPointsForRank = (rank) => {
   return rank; // position directly equals points earned
 };
 
+// Ordem oficial das provas do campeonato (identificadas pelo nome):
+//   Prova 1 – Three Stages (no RX Misto a Prova 1 é a Lockstep)
+//   Prova 2 – Sniper
+//   Prova 3 – Strong House
+const normalizeName = (name) =>
+  String(name || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+
+export const getWodEventNumber = (wod) => {
+  const n = normalizeName(wod?.name);
+  if (n.includes('threestage') || n.includes('lockstep')) return 1;
+  if (n.includes('sniper')) return 2;
+  if (n.includes('stronghouse')) return 3;
+  return null;
+};
+
+// Ordena as provas pela ordem oficial; provas não reconhecidas vão ao final,
+// mantendo a ordem de cadastro.
+export const sortWodsByEventOrder = (wods) =>
+  wods
+    .map((wod, idx) => ({ wod, idx, order: getWodEventNumber(wod) ?? Infinity }))
+    .sort((a, b) => (a.order !== b.order ? (a.order < b.order ? -1 : 1) : a.idx - b.idx))
+    .map(x => x.wod);
+
 // Formats seconds (e.g. 385.4) to "06:25.4" or "06:25"
 export const formatTime = (totalSeconds, includeMs = false) => {
   if (totalSeconds === undefined || totalSeconds === null || isNaN(totalSeconds)) return '--:--';
@@ -186,7 +213,9 @@ export const calculateWodRankings = (wod, athletes, scores) => {
 // Calculate Overall Standings per Category
 export const calculateOverallStandings = (category, athletes, wods, scores, heats = []) => {
   const categoryAthletes = athletes.filter(a => a.category === category);
-  const categoryWods = wods.filter(w => w.category === category || w.category === 'ALL');
+  const categoryWods = sortWodsByEventOrder(
+    wods.filter(w => w.category === category || w.category === 'ALL')
+  );
 
   // Precompute rankings for each WOD
   const wodRankingsMap = {};
@@ -229,8 +258,8 @@ export const calculateOverallStandings = (category, athletes, wods, scores, heat
     };
   });
 
-  // Prova 1 = primeira prova cadastrada da categoria
-  const firstWod = categoryWods[0];
+  // Prova 1 = Three Stages (ou Lockstep no RX Misto)
+  const firstWod = categoryWods.find(w => getWodEventNumber(w) === 1) || categoryWods[0];
   const rankValue = (item, wodId) => {
     const r = item.wodBreakdown[wodId]?.rank;
     return typeof r === 'number' ? r : Infinity;
