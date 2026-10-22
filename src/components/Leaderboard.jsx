@@ -9,6 +9,7 @@ export const Leaderboard = () => {
     wods, 
     athletes, 
     scores, 
+    heats,
     selectedCategory, 
     setSelectedCategory,
     selectedWodForLeaderboard,
@@ -22,7 +23,7 @@ export const Leaderboard = () => {
   const categoryWods = wods.filter(w => w.category === selectedCategory || w.category === 'ALL');
   const currentCategoryObj = categories.find(c => c.id === selectedCategory);
 
-  const overallStandings = calculateOverallStandings(selectedCategory, athletes, wods, scores);
+  const overallStandings = calculateOverallStandings(selectedCategory, athletes, wods, scores, heats);
 
   const filteredOverall = overallStandings.filter(item => 
     item.athlete.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

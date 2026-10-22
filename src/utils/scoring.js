@@ -133,7 +133,7 @@ export const calculateWodRankings = (wod, athletes, scores) => {
     });
 
   // Sort athletes according to WOD type logic
-  results.sort((a, b) => {
+  const compareResults = (a, b) => {
     if (!a.hasScore && !b.hasScore) return 0;
     if (!a.hasScore) return 1;
     if (!b.hasScore) return -1;
@@ -162,22 +162,29 @@ export const calculateWodRankings = (wod, athletes, scores) => {
       // Tiebreak time: lower time wins tiebreak
       return (a.scoreObj?.tiebreakTime || 99999) - (b.scoreObj?.tiebreakTime || 99999);
     }
-  });
+  };
 
-  // Assign ranks and points
-  let currentRank = 1;
+  results.sort(compareResults);
+
+  // Assign ranks and points.
+  // Regra de empate: equipes empatadas recebem a mesma colocação/pontuação, e a
+  // próxima colocação pula o número de posições ocupadas pelos empatados.
+  // Ex.: 1º, 2º, 2º, 4º  →  1, 2, 2, 4 pontos.
+  let prevRank = 0;
   return results.map((item, index) => {
     if (!item.hasScore) {
       return { ...item, rank: '-', points: 0 };
     }
-    const rank = index + 1;
+    const isTiedWithPrev = index > 0 && results[index - 1].hasScore && compareResults(results[index - 1], item) === 0;
+    const rank = isTiedWithPrev ? prevRank : index + 1;
+    prevRank = rank;
     const points = getPointsForRank(rank);
     return { ...item, rank, points };
   });
 };
 
 // Calculate Overall Standings per Category
-export const calculateOverallStandings = (category, athletes, wods, scores) => {
+export const calculateOverallStandings = (category, athletes, wods, scores, heats = []) => {
   const categoryAthletes = athletes.filter(a => a.category === category);
   const categoryWods = wods.filter(w => w.category === category || w.category === 'ALL');
 
@@ -190,6 +197,7 @@ export const calculateOverallStandings = (category, athletes, wods, scores) => {
   // Aggregate points per athlete
   const overall = categoryAthletes.map(athlete => {
     let totalPoints = 0;
+    let firstPlaces = 0;
     const wodBreakdown = {};
 
     categoryWods.forEach(wod => {
@@ -198,6 +206,7 @@ export const calculateOverallStandings = (category, athletes, wods, scores) => {
       
       if (athleteRankObj && athleteRankObj.hasScore) {
         totalPoints += athleteRankObj.points;
+        if (athleteRankObj.rank === 1) firstPlaces += 1;
         wodBreakdown[wod.id] = {
           rank: athleteRankObj.rank,
           points: athleteRankObj.points,
@@ -215,16 +224,65 @@ export const calculateOverallStandings = (category, athletes, wods, scores) => {
     return {
       athlete,
       totalPoints,
+      firstPlaces,
       wodBreakdown
     };
   });
 
-  // Sort overall standings by total points ascending (least points = winner)
-  overall.sort((a, b) => a.totalPoints - b.totalPoints);
+  // Prova 1 = primeira prova cadastrada da categoria
+  const firstWod = categoryWods[0];
+  const rankValue = (item, wodId) => {
+    const r = item.wodBreakdown[wodId]?.rank;
+    return typeof r === 'number' ? r : Infinity;
+  };
 
-  // Add overall rank position
-  return overall.map((item, idx) => ({
-    ...item,
-    overallRank: idx + 1
-  }));
+  // Confronto direto: provas em que os dois competiram na mesma bateria.
+  // Vence quem tiver melhor colocação em mais desses confrontos.
+  const headToHead = (a, b) => {
+    let aWins = 0;
+    let bWins = 0;
+    categoryWods.forEach(wod => {
+      const sharedHeat = (heats || []).some(h =>
+        h.wodId === wod.id &&
+        (h.lanes || []).some(l => l.athleteId === a.athlete.id) &&
+        (h.lanes || []).some(l => l.athleteId === b.athlete.id)
+      );
+      if (!sharedHeat) return;
+      const ra = rankValue(a, wod.id);
+      const rb = rankValue(b, wod.id);
+      if (ra < rb) aWins += 1;
+      else if (rb < ra) bWins += 1;
+    });
+    return bWins - aWins; // negative => a ahead
+  };
+
+  // Critérios de classificação final:
+  // 0. Menor pontuação acumulada
+  // 1. Melhor colocação na Prova 1
+  // 2. Maior número de 1º lugares
+  // 3. Confronto direto (quando aplicável)
+  const compareOverall = (a, b) => {
+    if (a.totalPoints !== b.totalPoints) return a.totalPoints - b.totalPoints;
+
+    if (firstWod) {
+      const ra = rankValue(a, firstWod.id);
+      const rb = rankValue(b, firstWod.id);
+      if (ra !== rb) return ra < rb ? -1 : 1;
+    }
+
+    if (a.firstPlaces !== b.firstPlaces) return b.firstPlaces - a.firstPlaces;
+
+    return headToHead(a, b);
+  };
+
+  overall.sort(compareOverall);
+
+  // Add overall rank position (empate persistente após todos os critérios = mesma posição)
+  let prevRank = 0;
+  return overall.map((item, idx) => {
+    const tied = idx > 0 && compareOverall(overall[idx - 1], item) === 0;
+    const overallRank = tied ? prevRank : idx + 1;
+    prevRank = overallRank;
+    return { ...item, overallRank };
+  });
 };

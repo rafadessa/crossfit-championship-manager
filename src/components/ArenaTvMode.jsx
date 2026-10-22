@@ -4,7 +4,7 @@ import { calculateOverallStandings } from '../utils/scoring';
 import { X, Flame } from 'lucide-react';
 
 export const ArenaTvMode = () => {
-  const { categories, wods, athletes, scores, setActiveTab } = useTournament();
+  const { categories, wods, athletes, scores, heats, setActiveTab } = useTournament();
 
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const activeCategory = categories[currentCategoryIndex] || categories[0];
@@ -18,7 +18,7 @@ export const ArenaTvMode = () => {
     return () => clearInterval(interval);
   }, [categories.length]);
 
-  const standings = calculateOverallStandings(activeCategory?.id, athletes, wods, scores);
+  const standings = calculateOverallStandings(activeCategory?.id, athletes, wods, scores, heats);
 
   return (
     <div className="fixed inset-0 z-50 bg-[#0B0D12] text-white p-6 md:p-10 flex flex-col justify-between overflow-y-auto no-scrollbar animate-fade-in">

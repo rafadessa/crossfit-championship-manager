@@ -37,7 +37,7 @@ export const Dashboard = () => {
   } = useTournament();
 
   const currentCategoryObj = categories.find(c => c.id === selectedCategory) || categories[0];
-  const standings = calculateOverallStandings(selectedCategory, athletes, wods, scores);
+  const standings = calculateOverallStandings(selectedCategory, athletes, wods, scores, heats);
 
   const hasData = athletes.length > 0 || wods.length > 0;
 
