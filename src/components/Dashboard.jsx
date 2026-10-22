@@ -298,9 +298,14 @@ export const Dashboard = () => {
                   >
                     <div className="space-y-2.5">
                       <div className="flex items-start justify-between gap-2">
-                        <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/30 text-[10px]">
-                          {wod.type.replace('_', ' ')}
-                        </span>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="wod-chip bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+                            {categories.find(c => c.id === wod.category)?.name || 'Geral'}
+                          </span>
+                          <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/30 text-[10px]">
+                            {wod.type.replace('_', ' ')}
+                          </span>
+                        </div>
                         <span className="text-[10px] font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
                           {wodScoresCount} {wodScoresCount === 1 ? 'nota' : 'notas'}
                         </span>
@@ -452,9 +457,14 @@ export const Dashboard = () => {
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-white group-hover:text-[#D60036] transition-colors">{wod.name}</span>
-                      <span className="wod-chip bg-white/10 text-slate-200 border border-white/20 text-[9px]">
-                        {wod.type.replace('_', ' ')}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="wod-chip bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[9px] font-bold">
+                          {categories.find(c => c.id === wod.category)?.name || 'Geral'}
+                        </span>
+                        <span className="wod-chip bg-white/10 text-slate-200 border border-white/20 text-[9px]">
+                          {wod.type.replace('_', ' ')}
+                        </span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{wod.description}</p>
                   </div>

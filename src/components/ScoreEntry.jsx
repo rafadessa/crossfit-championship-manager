@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { ClipboardCheck, CheckCircle2, Dumbbell, Clock, Plus, Minus, Flame, Play, Square, RotateCcw, Timer, Trash2, Edit3 } from 'lucide-react';
+import { ClipboardCheck, CheckCircle2, Dumbbell, Clock, Plus, Minus, Flame, Play, Square, RotateCcw, Timer, Trash2, Edit3, Tag } from 'lucide-react';
 import { formatTime } from '../utils/scoring';
 
 export const ScoreEntry = () => {
-  const { wods, athletes, scores, saveScore, deleteScore } = useTournament();
+  const { wods, categories = [], athletes, scores, saveScore, deleteScore } = useTournament();
 
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [selectedWodId, setSelectedWodId] = useState(wods[0]?.id || '');
   const [selectedAthleteId, setSelectedAthleteId] = useState('');
 
+  const getCategoryName = (catId) => {
+    if (!catId || catId === 'ALL') return 'Todas as Categorias';
+    const cat = categories.find(c => c.id === catId);
+    return cat ? cat.name : catId;
+  };
+
+  const filteredWods = categoryFilter === 'ALL'
+    ? wods
+    : wods.filter(w => w.category === categoryFilter || w.category === 'ALL');
+
   useEffect(() => {
-    if ((!selectedWodId || !wods.some(w => w.id === selectedWodId)) && wods.length > 0) {
-      setSelectedWodId(wods[0].id);
+    if ((!selectedWodId || !filteredWods.some(w => w.id === selectedWodId)) && filteredWods.length > 0) {
+      setSelectedWodId(filteredWods[0].id);
+      setSelectedAthleteId('');
     }
-  }, [wods, selectedWodId]);
+  }, [filteredWods, selectedWodId]);
   
   // Score Input Fields State
   const [isCap, setIsCap] = useState(false);
@@ -42,7 +54,7 @@ export const ScoreEntry = () => {
     return () => clearInterval(interval);
   }, [timerRunning]);
 
-  const activeWod = wods.find(w => w.id === selectedWodId) || wods[0];
+  const activeWod = wods.find(w => w.id === selectedWodId) || filteredWods[0] || wods[0];
   const wodAthletes = athletes.filter(a => a.category === activeWod?.category || activeWod?.category === 'ALL');
 
   // Load existing score when athlete changes
@@ -219,12 +231,58 @@ export const ScoreEntry = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           
+          {/* Category Filter Tabs */}
+          {categories && categories.length > 1 && (
+            <div className="space-y-1.5 p-3 rounded-xl bg-white/5 border border-white/10">
+              <label className="text-[11px] font-heading font-extrabold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-amber-400" /> Filtrar Provas por Categoria:
+              </label>
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                <button
+                  type="button"
+                  onClick={() => setCategoryFilter('ALL')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-heading font-bold transition-all whitespace-nowrap border ${
+                    categoryFilter === 'ALL'
+                      ? 'bg-[#D60036] text-white border-[#D60036] shadow-md shadow-[#D60036]/20'
+                      : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  Todas ({wods.length})
+                </button>
+                {categories.map(cat => {
+                  const count = wods.filter(w => w.category === cat.id || w.category === 'ALL').length;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setCategoryFilter(cat.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-heading font-bold transition-all whitespace-nowrap border ${
+                        categoryFilter === cat.id
+                          ? 'bg-[#D60036] text-white border-[#D60036] shadow-md shadow-[#D60036]/20'
+                          : 'bg-[#0B0D12] text-slate-400 border-white/10 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {cat.name} ({count})
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Step 1: Select WOD & Athlete */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             <div className="space-y-1.5">
-              <label className="text-xs font-heading font-black text-[#D60036] uppercase tracking-wider flex items-center gap-1.5">
-                <Dumbbell className="w-3.5 h-3.5" /> 1. Selecionar WOD
+              <label className="text-xs font-heading font-black text-[#D60036] uppercase tracking-wider flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Dumbbell className="w-3.5 h-3.5" /> 1. Selecionar WOD (Prova)
+                </span>
+                {activeWod && (
+                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
+                    {getCategoryName(activeWod.category)}
+                  </span>
+                )}
               </label>
               <select
                 value={selectedWodId}
@@ -234,24 +292,35 @@ export const ScoreEntry = () => {
                 }}
                 className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-[#D60036]"
               >
-                {wods.map(w => (
-                  <option key={w.id} value={w.id}>
-                    {w.name} ({w.type.toUpperCase()})
-                  </option>
-                ))}
+                {filteredWods.map(w => {
+                  const catName = getCategoryName(w.category);
+                  const typeLabel = w.type ? w.type.replace('_', ' ').toUpperCase() : '';
+                  return (
+                    <option key={w.id} value={w.id}>
+                      {w.name} — {catName} ({typeLabel})
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-red-500" /> 2. Selecionar Dupla
+              <label className="text-xs font-heading font-black text-slate-200 uppercase tracking-wider flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-red-500" /> 2. Selecionar Dupla
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">
+                  {wodAthletes.length} {wodAthletes.length === 1 ? 'dupla' : 'duplas'}
+                </span>
               </label>
               <select
                 value={selectedAthleteId}
                 onChange={(e) => handleAthleteChange(e.target.value)}
                 className="w-full p-3 bg-[#0B0D12] border border-white/15 rounded-xl text-white font-bold text-xs focus:outline-none focus:border-red-500"
               >
-                <option value="">-- Escolha uma Dupla --</option>
+                <option value="">
+                  -- Escolha uma Dupla ({getCategoryName(activeWod?.category)}) --
+                </option>
                 {wodAthletes.map(a => (
                   <option key={a.id} value={a.id}>
                     #{a.bib} - {a.name}
@@ -262,13 +331,37 @@ export const ScoreEntry = () => {
 
           </div>
 
-          {/* WOD Standard Reminder */}
+          {/* WOD Standard Reminder & Details */}
           {activeWod && (
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-              <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/30 text-[9px]">
-                {activeWod.type.replace('_', ' ')}
-              </span>
-              <p className="text-xs font-bold text-white">{activeWod.description}</p>
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-heading font-black text-sm text-white">
+                    {activeWod.name}
+                  </span>
+                  <span className="wod-chip bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold">
+                    🏷️ {getCategoryName(activeWod.category)}
+                  </span>
+                  <span className="wod-chip bg-[#D60036]/20 text-[#D60036] border border-[#D60036]/30 text-[9px] uppercase font-bold">
+                    {activeWod.type.replace('_', ' ')}
+                  </span>
+                </div>
+                {activeWod.timeCap && (
+                  <span className="wod-chip bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-mono">
+                    ⏱️ Cap: {formatTime(activeWod.timeCap)}
+                  </span>
+                )}
+              </div>
+              {activeWod.description && (
+                <p className="text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-line bg-black/30 p-2.5 rounded-lg border border-white/5">
+                  {activeWod.description}
+                </p>
+              )}
+              {activeWod.standards && (
+                <p className="text-[11px] text-slate-400 italic">
+                  <strong className="text-slate-300 not-italic">Padrões:</strong> {activeWod.standards}
+                </p>
+              )}
             </div>
           )}
 
@@ -522,12 +615,19 @@ export const ScoreEntry = () => {
       {/* History Table */}
       {activeWod && (
         <div className="wod-card p-5 md:p-6 border-white/10">
-          <h3 className="font-heading text-lg font-black text-white border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
-            <span>Histórico de Notas ({activeWod.name})</span>
-            <span className="text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">
+          <div className="border-b border-white/10 pb-3 mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-heading text-lg font-black text-white">
+                Histórico de Notas ({activeWod.name})
+              </h3>
+              <span className="wod-chip bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold">
+                🏷️ {getCategoryName(activeWod.category)}
+              </span>
+            </div>
+            <span className="text-xs text-slate-400 bg-white/5 px-2 py-1 rounded font-mono">
               {scores.filter(s => s.wodId === activeWod.id).length} lançamentos
             </span>
-          </h3>
+          </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">

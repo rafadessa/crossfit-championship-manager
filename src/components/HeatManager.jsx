@@ -3,7 +3,7 @@ import { useTournament } from '../context/TournamentContext';
 import { Layers, Plus, Timer, Dumbbell, PlayCircle, CheckCircle, Clock } from 'lucide-react';
 
 export const HeatManager = () => {
-  const { heats, wods, athletes, addHeat, updateHeatStatus, setActiveHeatForTimer, setActiveTab } = useTournament();
+  const { heats, wods, categories = [], athletes, addHeat, updateHeatStatus, setActiveHeatForTimer, setActiveTab } = useTournament();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -74,7 +74,14 @@ export const HeatManager = () => {
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div>
                   <h3 className="font-heading text-xl font-black text-white leading-none">{heat.name}</h3>
-                  <p className="text-xs text-red-400 font-mono mt-1 font-bold">{wodObj?.name}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-xs text-red-400 font-mono font-bold">{wodObj?.name}</p>
+                    {wodObj && (
+                      <span className="wod-chip bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[9px] font-bold">
+                        {categories.find(c => c.id === wodObj.category)?.name || 'Geral'}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="text-right space-y-1">
@@ -177,9 +184,14 @@ export const HeatManager = () => {
                     onChange={e => setFormData({ ...formData, wodId: e.target.value })}
                     className="w-full h-12 px-3 bg-[#0B0D12] border border-white/20 rounded-xl text-white text-xs font-bold focus:border-[#D60036] focus:outline-none"
                   >
-                    {wods.map(w => (
-                      <option key={w.id} value={w.id}>{w.name}</option>
-                    ))}
+                    {wods.map(w => {
+                      const cat = categories.find(c => c.id === w.category);
+                      return (
+                        <option key={w.id} value={w.id}>
+                          {w.name} {cat ? `— ${cat.name}` : ''}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
 
